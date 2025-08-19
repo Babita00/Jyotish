@@ -1,5 +1,6 @@
 'use client';
 
+import ProtectedRoute from '@/components/ProtectedRoute';
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/Header';
@@ -17,10 +18,12 @@ import { CalendarIcon, Clock, CheckCircle, Upload, CreditCard, Star, Heart, Brie
 import { format } from 'date-fns';
 import { useToast } from '@/hooks/use-toast';
 import { api, Service } from '@/lib/supabase';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function BookingPage() {
   const { currentLanguage, t } = useLanguage();
   const { toast } = useToast();
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const preSelectedService = searchParams.get('service');
   
@@ -188,6 +191,7 @@ export default function BookingPage() {
   };
 
   return (
+    <ProtectedRoute>
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       <Header />
       
@@ -200,7 +204,7 @@ export default function BookingPage() {
             
             {/* Progress Bar */}
             <div className="flex justify-center mb-8">
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 sm:space-x-4 overflow-x-auto no-scrollbar px-2 py-1">
                 {[1, 2, 3, 4].map((step) => (
                   <React.Fragment key={step}>
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold text-lg ${
@@ -211,7 +215,7 @@ export default function BookingPage() {
                       {currentStep > step ? <CheckCircle className="h-6 w-6" /> : step}
                     </div>
                     {step < 4 && (
-                      <div className={`w-16 h-1 rounded ${
+                      <div className={`w-10 sm:w-16 h-1 rounded ${
                         currentStep > step ? 'bg-indigo-600' : 'bg-gray-200'
                       }`} />
                     )}
@@ -221,7 +225,7 @@ export default function BookingPage() {
             </div>
             
             {/* Step Labels */}
-            <div className="grid grid-cols-4 gap-4 text-sm max-w-2xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 text-xs sm:text-sm max-w-2xl mx-auto">
               <div className={`text-center ${currentStep >= 1 ? 'text-indigo-600 font-semibold' : 'text-gray-500'} ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
                 {currentLanguage === 'ne' ? 'व्यक्तिगत जानकारी' : 'Personal Info'}
               </div>
@@ -592,5 +596,6 @@ export default function BookingPage() {
       
       <Footer />
     </div>
+    </ProtectedRoute>
   );
 }

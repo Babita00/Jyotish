@@ -4,7 +4,6 @@ import { Inter, Noto_Sans_Devanagari } from 'next/font/google';
 import { LanguageProvider } from '@/components/LanguageProvider';
 import { DrawerProvider } from '@/context/DrawerContext';
 import { Toaster } from '@/components/ui/toaster';
-import AstrologyDrawer from '@/components/layout/AstrologyDrawer';
 
 const inter = Inter({ subsets: ['latin'] });
 const notoSansDevanagari = Noto_Sans_Devanagari({ 
@@ -18,6 +17,11 @@ export const metadata: Metadata = {
   keywords: 'Nepali astrology, Kundali, Jyotish, marriage matching, career guidance, Nepal',
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -25,10 +29,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.className} ${notoSansDevanagari.variable}`}>
-      <body className={inter.className}>
+      {/* Set persistent dark background and hide horizontal overscroll to prevent white flashes during navigation */}
+      <body className={`${inter.className} min-h-screen overflow-x-hidden`} style={{ backgroundColor: '#0b0d26' }}>
         <LanguageProvider>
           <DrawerProvider>
-            <AstrologyDrawer />
             {children}
             <Toaster />
           </DrawerProvider>

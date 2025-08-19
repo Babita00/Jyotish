@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Import Noto Sans Devanagari for Nepali text */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700&display=swap");
 
 :root {
   --foreground-rgb: 0, 0, 0;
@@ -86,12 +86,25 @@
 
 /* Nepali font class */
 .font-nepali {
-  font-family: 'Noto Sans Devanagari', var(--font-nepali), sans-serif;
+  font-family: "Noto Sans Devanagari", var(--font-nepali), sans-serif;
 }
 
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
+}
+
+/* Prevent page white flash on route transitions by ensuring body and root are always painted */
+html,
+body,
+#__next,
+:root {
+  background-color: #0b0d26; /* matches site dark gradient base */
+}
+
+/* Reduce overscroll glow/whitespace on mobile when pulling */
+body {
+  overscroll-behavior: none;
 }
 
 /* Custom animations */
@@ -126,6 +139,7 @@ html {
 /* Line clamp utilities */
 .line-clamp-2 {
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -133,6 +147,7 @@ html {
 
 .line-clamp-3 {
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -169,6 +184,15 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
+}
+
+/* Hide scrollbar utility for overflow containers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* Focus styles */
@@ -215,8 +239,12 @@ html {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Glowing effects */
@@ -234,7 +262,7 @@ html {
     padding-left: 1rem;
     padding-right: 1rem;
   }
-  
+
   .font-nepali {
     font-size: 0.95em;
     line-height: 1.6;
@@ -262,7 +290,7 @@ html {
 .border-gradient {
   border: 2px solid transparent;
   background: linear-gradient(white, white) padding-box,
-              linear-gradient(135deg, #667eea, #764ba2) border-box;
+    linear-gradient(135deg, #667eea, #764ba2) border-box;
 }
 
 /* Drawer specific styles */
@@ -293,7 +321,7 @@ html {
 /* Card gradient borders */
 .card-gradient-border {
   background: linear-gradient(white, white) padding-box,
-              linear-gradient(135deg, #667eea, #764ba2) border-box;
+    linear-gradient(135deg, #667eea, #764ba2) border-box;
   border: 2px solid transparent;
 }
 

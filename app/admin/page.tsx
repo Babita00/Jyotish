@@ -1,5 +1,6 @@
 'use client';
 
+import ProtectedRoute from '@/components/ProtectedRoute';
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -26,9 +27,11 @@ import {
   Plus,
   Search
 } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function AdminPage() {
   const { currentLanguage, t } = useLanguage();
+  const { user, isAdmin } = useAuth();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -181,6 +184,37 @@ export default function AdminPage() {
     }
   ];
 
+  // Custom admin check component
+  const AdminProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+    if (!user) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+          <Header />
+          <div className="container mx-auto px-4 py-20 text-center">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Access Denied</h1>
+            <p className="text-gray-600 mb-8">Please login to access admin panel</p>
+          </div>
+          <Footer />
+        </div>
+      );
+    }
+
+    if (!isAdmin) {
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+          <Header />
+          <div className="container mx-auto px-4 py-20 text-center">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Admin Access Required</h1>
+            <p className="text-gray-600 mb-8">You need admin privileges to access this page</p>
+          </div>
+          <Footer />
+        </div>
+      );
+    }
+
+    return <>{children}</>;
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
@@ -194,6 +228,7 @@ export default function AdminPage() {
   }
 
   return (
+    <AdminProtectedRoute>
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       <Header />
       
@@ -462,5 +497,6 @@ export default function AdminPage() {
       
       <Footer />
     </div>
+    </AdminProtectedRoute>
   );
 }

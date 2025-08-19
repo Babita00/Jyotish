@@ -103,7 +103,7 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Cosmic Background */}
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
-          <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/956981/milky-way-starry-sky-night-sky-star-956981.jpeg')] bg-cover bg-center opacity-30"></div>
+          {/* <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/956981/milky-way-starry-sky-night-sky-star-956981.jpeg')] bg-cover bg-center opacity-30"></div> */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
         </div>
         
@@ -257,9 +257,9 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <img 
-                src="https://images.pexels.com/photos/6962023/pexels-photo-6962023.jpeg" 
+                src="https://cdn.britannica.com/72/223172-131-C3F72804/astrology-horoscope-circle.jpg" 
                 alt="Astrologer" 
-                className="w-full h-96 object-cover rounded-2xl shadow-2xl"
+                className="w-full  object-cover rounded-2xl shadow-2xl"
               />
             </div>
             <div>
@@ -351,7 +351,7 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-indigo-900 via-purple-900 to-pink-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/956981/milky-way-starry-sky-night-sky-star-956981.jpeg')] bg-cover bg-center opacity-20"></div>
+        {/* <div className="absolute inset-0 bg-[url('https://images.pexels.com/photos/956981/milky-way-starry-sky-night-sky-star-956981.jpeg')] bg-cover bg-center opacity-20"></div> */}
         <div className="container mx-auto px-4 text-center relative">
           <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
             {currentLanguage === 'ne' 
