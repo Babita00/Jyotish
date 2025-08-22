@@ -81,9 +81,12 @@ export default function RegisterPage() {
     if (!validateForm()) return;
     
     setIsLoading(true);
+    console.log('🚀 Starting signup process...');
     
     try {
-      await signUp(formData.email, formData.password, formData.fullName, formData.phone);
+      console.log('📤 Calling signUp function...');
+      const result = await signUp(formData.email, formData.password, formData.fullName, formData.phone);
+      console.log('📥 SignUp result:', result);
       
       toast({
         title: currentLanguage === 'ne' ? 'सफल!' : 'Success!',
@@ -94,9 +97,28 @@ export default function RegisterPage() {
       
       router.push('/login');
     } catch (error: any) {
+      console.error('💥 Signup error caught:', error);
+      
+      let errorMessage = error.message || (currentLanguage === 'ne' ? 'खाता सिर्जना गर्न समस्या भयो' : 'Failed to create account');
+      
+      // Handle specific Supabase errors
+      if (error.message?.includes('User already registered')) {
+        errorMessage = currentLanguage === 'ne' 
+          ? 'यो इमेल पहिले नै दर्ता छ। कृपया लगइन गर्नुहोस्।'
+          : 'This email is already registered. Please login.';
+      } else if (error.message?.includes('Invalid email')) {
+        errorMessage = currentLanguage === 'ne' 
+          ? 'वैध इमेल प्रविष्ट गर्नुहोस्'
+          : 'Please enter a valid email address';
+      } else if (error.message?.includes('Password')) {
+        errorMessage = currentLanguage === 'ne' 
+          ? 'पासवर्ड कम्तिमा ६ अक्षरको हुनुपर्छ'
+          : 'Password must be at least 6 characters long';
+      }
+      
       toast({
         title: currentLanguage === 'ne' ? 'त्रुटि' : 'Error',
-        description: error.message || (currentLanguage === 'ne' ? 'खाता सिर्जना गर्न समस्या भयो' : 'Failed to create account'),
+        description: errorMessage,
         variant: 'destructive'
       });
     } finally {

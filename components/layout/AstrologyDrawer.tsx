@@ -27,12 +27,12 @@ export default function AstrologyDrawer() {
       )}
 
       {/* Drawer */}
-      <div className={`fixed top-0 left-0 h-full drawer-responsive bg-white shadow-2xl z-[70] transform transition-transform duration-300 overflow-y-auto ${
+      <div className={`fixed top-0 left-0 h-full drawer-responsive bg-white shadow-2xl z-[70] transform transition-transform duration-300 overflow-y-auto max-w-[90vw] sm:max-w-sm ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
-        {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6">
-          <div className="flex items-center justify-between mb-4">
+        {/* Header - compact padding to avoid large empty area on wide screens */}
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-4 md:p-5">
+          <div className="flex items-center justify-between mb-2 md:mb-3">
             <h2 className={`text-2xl font-bold ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
               {currentLanguage === 'ne' ? 'ज्योतिष मेनु' : 'Astrology Menu'}
             </h2>
