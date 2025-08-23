@@ -120,7 +120,98 @@ export default function ServiceDetailPage() {
         { en: 'Yoga and meditation guidance', ne: 'योग र ध्यान मार्गदर्शन' },
         { en: 'Recovery timeline predictions', ne: 'रिकभरी समयरेखा भविष्यवाणी' }
       ]
-    }
+    },
+    pujapath: {
+  id: 'pujapath',
+  icon: <Activity className="h-16 w-16 text-orange-400" />,
+  titleEn: 'Puja Path (Ritual Services)',
+  titleNe: 'पुजापाठ (कर्मकाण्ड)',
+  shortDescEn: 'Traditional Hindu rituals and ceremonial worship',
+  shortDescNe: 'पारम्परिक हिन्दू अनुष्ठान र पूजा उपासना',
+  detailedDescEn: 'Experience the divine blessings through our authentic Puja Path services. Our experienced priests perform traditional Hindu rituals following ancient Vedic customs to bring peace, prosperity, and spiritual fulfillment to your life. Each ceremony is conducted with proper mantras and sacred procedures.',
+  detailedDescNe: 'हाम्रो प्रामाणिक पूजापाठ सेवाहरूमार्फत दिव्य आशीर्वादको अनुभव गर्नुहोस्। हाम्रा अनुभवी पुजारीहरूले तपाईंको जीवनमा शान्ति, समृद्धि र आध्यात्मिक पूर्णता ल्याउन पुरातन वैदिक चलन अनुसार पारम्परिक हिन्दू अनुष्ठानहरू गर्छन्। प्रत्येक समारोह उचित मन्त्र र पवित्र प्रक्रियाहरूसहित सञ्चालन गरिन्छ।',
+  price: 2500,
+  duration: '45-60 minutes',
+  gradient: 'from-orange-400 to-red-500',
+  features: [
+    { en: 'Traditional Vedic ritual performance', ne: 'पारम्परिक वैदिक अनुष्ठान सम्पादन' },
+    { en: 'Sacred mantra chanting', ne: 'पवित्र मन्त्र जाप' },
+    { en: 'Ceremonial offerings and prayers', ne: 'औपचारिक भेटी र प्रार्थना' },
+    { en: 'Personalized ritual selection', ne: 'व्यक्तिगत अनुष्ठान छनोट' },
+    { en: 'Spiritual guidance and blessings', ne: 'आध्यात्मिक मार्गदर्शन र आशीर्वाद' },
+    { en: 'Post-ritual prasad distribution', ne: 'अनुष्ठान पछि प्रसाद वितरण' },
+    { en: 'Complete ritual documentation', ne: 'पूर्ण अनुष्ठान दस्तावेजीकरण' }
+  ]
+},
+
+vastu: {
+  id: 'vastu',
+  icon: <MapPin className="h-16 w-16 text-emerald-400" />,
+  titleEn: 'Vastu Seva (Architectural Consulting)',
+  titleNe: 'वास्तु सेवा',
+  shortDescEn: 'Ancient architectural science for harmonious living spaces',
+  shortDescNe: 'सामंजस्यपूर्ण बासस्थानका लागि पुरातन वास्तु विज्ञान',
+  detailedDescEn: 'Transform your living and working spaces with our comprehensive Vastu consultation services. Our experts analyze your property according to ancient Vastu Shastra principles to ensure positive energy flow, prosperity, and well-being for all occupants. Get personalized recommendations for optimal spatial arrangements.',
+  detailedDescNe: 'हाम्रो व्यापक वास्तु परामर्श सेवाहरूसँग आफ्नो बासस्थान र कार्यस्थललाई रूपान्तरण गर्नुहोस्। हाम्रा विशेषज्ञहरूले सबै बासिन्दाहरूका लागि सकारात्मक ऊर्जा प्रवाह, समृद्धि र कल्याण सुनिश्चित गर्न पुरातन वास्तु शास्त्र सिद्धान्तहरू अनुसार तपाईंको सम्पत्तिको विश्लेषण गर्छन्। इष्टतम स्थानीय व्यवस्थाका लागि व्यक्तिगत सिफारिसहरू प्राप्त गर्नुहोस्।',
+  price: 2200,
+  duration: '50-60 minutes',
+  gradient: 'from-emerald-400 to-teal-500',
+  features: [
+    { en: 'Complete property analysis', ne: 'पूर्ण सम्पत्ति विश्लेषण' },
+    { en: 'Room-wise Vastu assessment', ne: 'कोठा अनुसार वास्तु मूल्याङ्कन' },
+    { en: 'Energy flow optimization', ne: 'ऊर्जा प्रवाह अनुकूलन' },
+    { en: 'Directional recommendations', ne: 'दिशागत सिफारिसहरू' },
+    { en: 'Remedial measures for Vastu defects', ne: 'वास्तु दोषका लागि उपचारात्मक उपायहरू' },
+    { en: 'Interior design suggestions', ne: 'भित्री सजावट सुझावहरू' },
+    { en: 'Detailed Vastu compliance report', ne: 'विस्तृत वास्तु अनुपालन रिपोर्ट' }
+  ]
+},
+
+chinesekundali: {
+  id: 'chinesekundali',
+  icon: <Sparkles className="h-16 w-16 text-purple-400" />,
+  titleEn: 'China Kundali Nirman (Chinese Horoscope)',
+  titleNe: 'चिना कुण्डली निर्माण',
+  shortDescEn: 'Eastern astrology and Chinese zodiac analysis',
+  shortDescNe: 'पूर्वी ज्योतिष र चिनियाँ राशि विश्लेषण',
+  detailedDescEn: 'Discover your destiny through ancient Chinese astrology with our comprehensive Chinese horoscope creation service. We analyze your birth details according to Chinese zodiac traditions, Five Element theory, and lunar calendar systems to provide unique insights into your personality, compatibility, and future prospects.',
+  detailedDescNe: 'हाम्रो व्यापक चिनियाँ कुण्डली निर्माण सेवाको साथ पुरातन चिनियाँ ज्योतिषमार्फत आफ्नो भाग्य पत्ता लगाउनुहोस्। हामी तपाईंको व्यक्तित्व, मेल र भविष्यका सम्भावनाहरूमा अनौठो अन्तर्दृष्टि प्रदान गर्न चिनियाँ राशि परम्परा, पञ्च तत्व सिद्धान्त, र चन्द्र पात्रो प्रणाली अनुसार तपाईंको जन्म विवरणहरूको विश्लेषण गर्छौं।',
+  price: 1800,
+  duration: '40-50 minutes',
+  gradient: 'from-purple-400 to-indigo-500',
+  features: [
+    { en: 'Chinese zodiac animal identification', ne: 'चिनियाँ राशि जनावर पहिचान' },
+    { en: 'Five Element analysis', ne: 'पञ्च तत्व विश्लेषण' },
+    { en: 'Lunar calendar interpretation', ne: 'चन्द्र पात्रो व्याख्या' },
+    { en: 'Personality traits assessment', ne: 'व्यक्तित्व गुण मूल्याङ्कन' },
+    { en: 'Compatibility with other animals', ne: 'अन्य जनावरहरूसँग मेल' },
+    { en: 'Lucky years and periods', ne: 'भाग्यशाली वर्ष र अवधिहरू' },
+    { en: 'Chinese horoscope reading', ne: 'चिनियाँ कुण्डली पठन' }
+  ]
+},
+
+grahashanti: {
+  id: 'grahashanti',
+  icon: <Star className="h-16 w-16 text-amber-400" />,
+  titleEn: 'Graha Shanti Puja (Planetary Peace Ritual)',
+  titleNe: 'ग्रहशान्ति पूजा',
+  shortDescEn: 'Powerful rituals to pacify malefic planetary influences',
+  shortDescNe: 'हानिकारक ग्रहीय प्रभावहरू शान्त पार्न शक्तिशाली अनुष्ठान',
+  detailedDescEn: 'Neutralize negative planetary influences and enhance positive cosmic energies with our specialized Graha Shanti Puja. Our experienced priests perform powerful Vedic rituals to appease specific planets causing difficulties in your life, bringing peace, prosperity, and spiritual harmony.',
+  detailedDescNe: 'हाम्रो विशेष ग्रहशान्ति पूजाको साथ नकारात्मक ग्रहीय प्रभावहरूलाई निष्प्रभावी पार्नुहोस् र सकारात्मक ब्रह्माण्डीय ऊर्जाहरू बढाउनुहोस्। हाम्रा अनुभवी पुजारीहरूले तपाईंको जीवनमा कठिनाइहरू निम्त्याउने विशिष्ट ग्रहहरूलाई सन्तुष्ट पार्न शक्तिशाली वैदिक अनुष्ठानहरू गर्छन्, जसले शान्ति, समृद्धि र आध्यात्मिक सामंजस्य ल्याउँछ।',
+  price: 3000,
+  duration: '55-60 minutes',
+  gradient: 'from-amber-400 to-yellow-500',
+  features: [
+    { en: 'Planetary defect identification', ne: 'ग्रहीय दोष पहिचान' },
+    { en: 'Specific planet appeasement rituals', ne: 'विशिष्ट ग्रह सन्तुष्टि अनुष्ठान' },
+    { en: 'Sacred mantras for each planet', ne: 'प्रत्येक ग्रहका लागि पवित्र मन्त्र' },
+    { en: 'Gemstone recommendations', ne: 'रत्न सिफारिसहरू' },
+    { en: 'Remedial measures and solutions', ne: 'उपचारात्मक उपाय र समाधान' },
+    { en: 'Planetary yantra energization', ne: 'ग्रहीय यन्त्र ऊर्जीकरण' },
+    { en: 'Complete peace ritual ceremony', ne: 'पूर्ण शान्ति अनुष्ठान समारोह' }
+  ]
+}
   };
 
   const service = services[serviceId as keyof typeof services];

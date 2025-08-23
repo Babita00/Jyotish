@@ -24,6 +24,8 @@ export default function LoginPage() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validateForm = () => {
@@ -65,13 +67,60 @@ export default function LoginPage() {
       
       router.push('/');
     } catch (error: any) {
+      // Check if it's an email confirmation error
+      if (error.message?.toLowerCase().includes('email not confirmed') || 
+          error.message?.toLowerCase().includes('confirm')) {
+        setShowEmailConfirmation(true);
+      } else {
+        toast({
+          title: currentLanguage === 'ne' ? 'त्रुटि' : 'Error',
+          description: error.message || (currentLanguage === 'ne' ? 'लगइन गर्न समस्या भयो' : 'Failed to login'),
+          variant: 'destructive'
+        });
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!formData.email || isResending) return;
+    
+    setIsResending(true);
+    
+    try {
+      const response = await fetch('/api/auth/resend-confirmation', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast({
+          title: currentLanguage === 'ne' ? 'सफल!' : 'Success!',
+          description: currentLanguage === 'ne' 
+            ? 'पुष्टिकरण इमेल पठाइयो। कृपया आफ्नो इनबक्स जाँच गर्नुहोस्।'
+            : 'Confirmation email sent. Please check your inbox.',
+        });
+      } else {
+        toast({
+          title: currentLanguage === 'ne' ? 'त्रुटि' : 'Error',
+          description: data.error || (currentLanguage === 'ne' ? 'इमेल पठाउन समस्या भयो' : 'Failed to send email'),
+          variant: 'destructive'
+        });
+      }
+    } catch (error) {
       toast({
         title: currentLanguage === 'ne' ? 'त्रुटि' : 'Error',
-        description: error.message || (currentLanguage === 'ne' ? 'लगइन गर्न समस्या भयो' : 'Failed to login'),
+        description: currentLanguage === 'ne' ? 'इमेल पठाउन समस्या भयो' : 'Failed to send confirmation email',
         variant: 'destructive'
       });
     } finally {
-      setIsLoading(false);
+      setIsResending(false);
     }
   };
 
@@ -190,6 +239,52 @@ export default function LoginPage() {
                 )}
               </Button>
             </form>
+
+            {/* Email Confirmation Section */}
+            {showEmailConfirmation && (
+              <div className="space-y-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="text-center">
+                  <Mail className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
+                  <h3 className={`font-semibold text-yellow-800 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
+                    {currentLanguage === 'ne' ? 'इमेल पुष्टिकरण आवश्यक' : 'Email Confirmation Required'}
+                  </h3>
+                  <p className={`text-sm text-yellow-700 mt-2 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
+                    {currentLanguage === 'ne' 
+                      ? 'कृपया आफ्नो इमेल पुष्टि गर्नुहोस्। पुष्टिकरण इमेल आफ्नो इनबक्स वा स्प्याम फोल्डरमा जाँच गर्नुहोस्।'
+                      : 'Please confirm your email address. Check your inbox or spam folder for the confirmation email.'
+                    }
+                  </p>
+                </div>
+                
+                <div className="flex flex-col space-y-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleResendConfirmation}
+                    disabled={isResending || !formData.email}
+                    className={`w-full ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}
+                  >
+                    {isResending ? (
+                      <div className="flex items-center">
+                        <div className="spinner mr-2"></div>
+                        {currentLanguage === 'ne' ? 'पठाउँदै...' : 'Sending...'}
+                      </div>
+                    ) : (
+                      currentLanguage === 'ne' ? 'पुष्टिकरण इमेल फेरि पठाउनुहोस्' : 'Resend Confirmation Email'
+                    )}
+                  </Button>
+                  
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowEmailConfirmation(false)}
+                    className={`w-full text-sm ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}
+                  >
+                    {currentLanguage === 'ne' ? 'फिर्ता लगइन गर्नुहोस्' : 'Back to Login'}
+                  </Button>
+                </div>
+              </div>
+            )}
 
             {/* Sign Up Link */}
             <div className="text-center pt-4 border-t border-gray-200">

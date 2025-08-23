@@ -71,7 +71,10 @@ export async function POST(request: NextRequest) {
       const { data, error } = await supabase.auth.signUp({
         email: e,
         password: p,
-        options: { data: { full_name: name, phone: ph || null } },
+        options: {
+          data: { full_name: name, phone: ph || null },
+          emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
+        },
       });
 
       if (error) {

@@ -61,6 +61,26 @@ const translations = {
     'contact.email': 'Email',
     'contact.whatsapp': 'WhatsApp',
     
+    // Profile
+    'profile.profile': 'Profile',
+    'profile.view_profile': 'View Profile',
+    'profile.logout': 'Logout',
+    'profile.account': 'Account',
+    'profile.personal_info': 'Personal Information',
+    'profile.account_details': 'Account Details',
+    'profile.edit_profile': 'Edit Profile',
+    'profile.save_changes': 'Save Changes',
+    'profile.cancel': 'Cancel',
+    'profile.full_name': 'Full Name',
+    'profile.email': 'Email Address',
+    'profile.phone': 'Phone Number',
+    'profile.role': 'Role',
+    'profile.member_since': 'Member Since',
+    'profile.last_updated': 'Last Updated',
+    'profile.profile_updated': 'Profile updated successfully!',
+    'profile.update_error': 'Failed to update profile. Please try again.',
+    'profile.loading': 'Loading profile...',
+    
     // Common
     'common.loading': 'Loading...',
     'common.submit': 'Submit',
@@ -117,6 +137,26 @@ const translations = {
     'contact.phone': 'फोन',
     'contact.email': 'इमेल',
     'contact.whatsapp': 'व्हाट्सएप',
+    
+    // Profile
+    'profile.profile': 'प्रोफाइल',
+    'profile.view_profile': 'प्रोफाइल हेर्नुहोस्',
+    'profile.logout': 'लगआउट',
+    'profile.account': 'खाता',
+    'profile.personal_info': 'व्यक्तिगत जानकारी',
+    'profile.account_details': 'खाता विवरण',
+    'profile.edit_profile': 'प्रोफाइल सम्पादन गर्नुहोस्',
+    'profile.save_changes': 'परिवर्तनहरू सुरक्षित गर्नुहोस्',
+    'profile.cancel': 'रद्द गर्नुहोस्',
+    'profile.full_name': 'पूरा नाम',
+    'profile.email': 'इमेल ठेगाना',
+    'profile.phone': 'फोन नम्बर',
+    'profile.role': 'भूमिका',
+    'profile.member_since': 'सदस्यता मिति',
+    'profile.last_updated': 'अन्तिम अपडेट',
+    'profile.profile_updated': 'प्रोफाइल सफलतापूर्वक अपडेट भयो!',
+    'profile.update_error': 'प्रोफाइल अपडेट गर्न असफल। कृपया फेरि प्रयास गर्नुहोस्।',
+    'profile.loading': 'प्रोफाइल लोड हुँदै...',
     
     // Common
     'common.loading': 'लोड हुँदै...',
