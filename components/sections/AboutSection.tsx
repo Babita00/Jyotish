@@ -3,7 +3,7 @@
 import React from 'react';
 import { Award, Users, Star } from 'lucide-react';
 import type { AboutSectionProps } from '@/types/sections';
-
+import aboutSectionImage from  '@/app/api/assets/about-section image.webp';
 export default function AboutSection({ currentLanguage, t }: AboutSectionProps) {
   return (
     <section className="py-20 bg-gradient-to-br from-indigo-900 to-purple-900 text-white">
@@ -11,9 +11,12 @@ export default function AboutSection({ currentLanguage, t }: AboutSectionProps) 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
             <img 
-              src="https://cdn.britannica.com/72/223172-131-C3F72804/astrology-horoscope-circle.jpg" 
+              src={aboutSectionImage.src}
               alt="Astrologer" 
-              className="w-full  object-cover rounded-2xl shadow-2xl"
+              className="w-full aspect-square object-cover rounded-full shadow-2xl select-none pointer-events-none"
+              style={{
+                animation: 'spin 20s linear infinite'
+              }}
             />
           </div>
           <div>
