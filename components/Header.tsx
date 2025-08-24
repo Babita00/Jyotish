@@ -6,7 +6,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from './LanguageProvider';
 import { useDrawerContext } from '@/context/DrawerContext';
 import { Button } from './ui/button';
-import { Star, Phone, User, LogOut, Menu } from 'lucide-react';
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu';
+import { Star, Phone, User, LogOut, Menu, UserCircle } from 'lucide-react';
 import AstrologyDrawer from '@/components/layout/AstrologyDrawer';
 
 export default function Header() {
@@ -67,23 +76,38 @@ export default function Header() {
             {!loading && (
               <div className="flex items-center space-x-2 mr-2 sm:mr-4">
                 {user ? (
-                  <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-1 text-white">
-                      <User className="h-4 w-4" />
-                      <span className="text-sm font-medium">
-                        {user.user_metadata?.full_name || user.email?.split('@')[0]}
-                      </span>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleSignOut}
-                      className="text-white hover:bg-indigo-700 p-2"
-                      title={currentLanguage === 'ne' ? 'लगआउट' : 'Logout'}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        className="relative h-8 w-8 rounded-full bg-gray-200 hover:bg-gray-300 p-0 border border-gray-300"
+                        aria-label={t('profile.profile')}
+                      >
+                        <User className="h-4 w-4 text-gray-600" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent 
+                      className="w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg" 
+                      align="end" 
+                      forceMount
                     >
-                      <LogOut className="h-4 w-4" />
-                    </Button>
-                  </div>
+                      <DropdownMenuItem
+                        className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 focus:bg-gray-100 dark:focus:bg-gray-700"
+                        onClick={() => window.location.href = '/profile'}
+                      >
+                        <UserCircle className="mr-2 h-4 w-4" />
+                        <span>{t('profile.view_profile')}</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator className="bg-gray-200 dark:bg-gray-700" />
+                      <DropdownMenuItem
+                        className="cursor-pointer text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 focus:bg-red-50 dark:focus:bg-red-900/20"
+                        onClick={handleSignOut}
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        <span>{t('profile.logout')}</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 ) : (
                   <div className="flex items-center space-x-2">
                     <Link href="/login">
