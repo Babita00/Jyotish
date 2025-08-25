@@ -12,7 +12,9 @@ export async function middleware(req: NextRequest) {
   } = await supabase.auth.getSession();
 
   // Protected routes that require authentication
-  const protectedRoutes = ["/booking", "/admin"];
+  // Note: Booking is gated client-side via ProtectedRoute and API routes enforce auth.
+  // Keeping only admin here avoids false negatives from edge/session desync.
+  const protectedRoutes = ["/admin"];
   const adminRoutes = ["/admin"];
 
   const isProtectedRoute = protectedRoutes.some((route) =>

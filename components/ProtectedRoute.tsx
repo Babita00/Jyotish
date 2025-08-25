@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/components/LanguageProvider';
 import { Card, CardContent } from '@/components/ui/card';
@@ -21,12 +21,14 @@ export default function ProtectedRoute({
   const { user, loading } = useAuth();
   const { currentLanguage } = useLanguage();
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!loading && requireAuth && !user) {
-      router.push(redirectTo);
+      const target = `${redirectTo}?redirectTo=${encodeURIComponent(pathname)}`;
+      router.push(target);
     }
-  }, [user, loading, requireAuth, redirectTo, router]);
+  }, [user, loading, requireAuth, redirectTo, router, pathname]);
 
   // Show loading state
   if (loading) {

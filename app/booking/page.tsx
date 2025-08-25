@@ -33,6 +33,7 @@ export default function BookingPage() {
     phone: '',
     email: '',
     service: preSelectedService || '',
+    customService: '',
     consultationType: '',
     date: null as Date | null,
     time: '',
@@ -78,7 +79,11 @@ export default function BookingPage() {
       case 1:
         return formData.name && formData.phone && formData.email;
       case 2:
-        return formData.service && formData.consultationType;
+        if (!formData.consultationType || !formData.service) return false;
+        if (formData.service === 'other') {
+          return Boolean(formData.customService && formData.customService.trim());
+        }
+        return true;
       case 3:
         return formData.date && formData.time;
       case 4:
@@ -141,7 +146,10 @@ export default function BookingPage() {
         preferred_time: formData.time,
         payment_method: formData.paymentMethod as any,
         transaction_id: formData.transactionId,
-        payment_screenshot_url: paymentScreenshotUrl
+        payment_screenshot_url: paymentScreenshotUrl,
+        notes: formData.service === 'other' && formData.customService
+          ? `Custom service: ${formData.customService}`
+          : ''
       };
 
       const response = await fetch('/api/bookings', {
@@ -335,6 +343,54 @@ export default function BookingPage() {
                           </CardContent>
                         </Card>
                       ))}
+
+                      {/* Other service option */}
+                      <Card 
+                        className={`cursor-pointer transition-all duration-300 hover:shadow-lg ${
+                          formData.service === 'other' 
+                            ? 'ring-2 ring-indigo-500 bg-indigo-50' 
+                            : 'hover:bg-gray-50'
+                        }`}
+                        onClick={() => handleInputChange('service', 'other')}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-3">
+                              <div className="h-5 w-5 rounded-full bg-gray-300" />
+                              <div>
+                                <h3 className={`font-semibold ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
+                                  {currentLanguage === 'ne' ? 'अन्य सेवा (आफ्नै लेख्नुहोस्)' : 'Other Service (write your own)'}
+                                </h3>
+                                <p className="text-gray-600">
+                                  {currentLanguage === 'ne' ? 'कृपया तल विवरण लेख्नुहोस्' : 'Please describe the service below'}
+                                </p>
+                              </div>
+                            </div>
+                            <div className={`w-5 h-5 rounded-full border-2 ${
+                              formData.service === 'other' 
+                                ? 'bg-indigo-500 border-indigo-500' 
+                                : 'border-gray-300'
+                            }`}>
+                              {formData.service === 'other' && (
+                                <CheckCircle className="w-5 h-5 text-white" />
+                              )}
+                            </div>
+                          </div>
+                          {formData.service === 'other' && (
+                            <div className="mt-4">
+                              <Label className={`text-sm ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
+                                {currentLanguage === 'ne' ? 'सेवा विवरण' : 'Service description'}
+                              </Label>
+                              <Input
+                                value={formData.customService}
+                                onChange={(e) => handleInputChange('customService', e.target.value)}
+                                className="mt-2"
+                                placeholder={currentLanguage === 'ne' ? 'उदाहरण: मुहूर्त परामर्श' : 'e.g., Muhurat consultation'}
+                              />
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
                   
