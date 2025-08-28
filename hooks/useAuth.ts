@@ -69,10 +69,16 @@ export function useAuth() {
     if (!user) throw new Error("No user logged in");
 
     try {
+      // get current session token from Supabase
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       const response = await fetch("/api/profile", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`, // 👈 add this
         },
         body: JSON.stringify(updates),
       });
