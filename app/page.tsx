@@ -3,22 +3,29 @@
 import React from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import DailyHoroscope from '@/components/user/DailyHoroscope';
 import { useLanguage } from '@/components/LanguageProvider';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import Link from 'next/link';
 import { 
   Star, 
+  Calendar, 
   Heart, 
   Briefcase, 
-  Activity,
+  Activity, 
+  DollarSign, 
+  Type,
+  Phone,
+  Video,
   MapPin,
+  Clock,
+  Award,
+  Users,
+  ArrowRight,
   Sparkles
 } from 'lucide-react';
-
-// Section Components
-import HeroSection from '@/components/sections/HeroSection';
-import ServicesSection from '@/components/sections/ServicesSection';
-import AboutSection from '@/components/sections/AboutSection';
-import TestimonialsSection from '@/components/sections/TestimonialsSection';
-import CTASection from '@/components/sections/CTASection';
+import { AboutSection, CTASection, HeroSection, ServicesSection, TestimonialsSection } from '@/components/sections';
 
 export default function Home() {
   const { currentLanguage, t } = useLanguage();
@@ -63,46 +70,7 @@ export default function Home() {
       descNe: 'कल्याण र दीर्घायुको लागि स्वास्थ्य पूर्वानुमान र उपचारात्मक उपायहरू',
       price: 1500,
       gradient: 'from-green-400 to-emerald-500'
-    },
-    {
-      id: 'pujapath',
-      icon: <Activity className="h-12 w-12 text-orange-400" />,
-      titleEn: 'Puja Path (Ritual Services)',
-      titleNe: 'पुजापाठ (कर्मकाण्ड)',
-      descEn: 'Traditional Hindu rituals and ceremonial worship for divine blessings',
-      descNe: 'दिव्य आशीर्वादको लागि पारम्परिक हिन्दू अनुष्ठान र पूजा उपासना',
-      price: 2500,
-      gradient: 'from-orange-400 to-red-500'
-    },
-    {
-      id: 'vastu',
-      icon: <MapPin className="h-12 w-12 text-emerald-400" />,
-      titleEn: 'Vastu Seva (Architectural Consulting)',
-      titleNe: 'वास्तु सेवा',
-      descEn: 'Ancient architectural science for harmonious living spaces',
-      descNe: 'सामंजस्यपूर्ण बासस्थानका लागि पुरातन वास्तु विज्ञान',
-      price: 2200,
-      gradient: 'from-emerald-400 to-teal-500'
-    },
-    {
-      id: 'chinesekundali',
-      icon: <Sparkles className="h-12 w-12 text-purple-400" />,
-      titleEn: 'China Kundali Nirman (Chinese Horoscope)',
-      titleNe: 'चिना कुण्डली निर्माण',
-      descEn: 'Eastern astrology and Chinese zodiac analysis for unique insights',
-      descNe: 'अनौठो अन्तर्दृष्टिको लागि पूर्वी ज्योतिष र चिनियाँ राशि विश्लेषण',
-      price: 1800,
-      gradient: 'from-purple-400 to-indigo-500'
-    },
-    {
-      id: 'grahashanti',
-      icon: <Star className="h-12 w-12 text-amber-400" />,
-      titleEn: 'Graha Shanti Puja (Planetary Peace Ritual)',
-      titleNe: 'ग्रहशान्ति पूजा',
-      descEn: 'Powerful rituals to pacify malefic planetary influences',
-      descNe: 'हानिकारक ग्रहीय प्रभावहरू शान्त पार्न शक्तिशाली अनुष्ठान',
-      price: 3000,
-      gradient: 'from-amber-400 to-yellow-500'
+
     }
   ];
 
@@ -133,19 +101,26 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       <Header />
-      
-      <HeroSection currentLanguage={currentLanguage} />
+            <HeroSection currentLanguage={currentLanguage} />
       
       <ServicesSection 
         currentLanguage={currentLanguage} 
         services={services} 
       />
       
-      <AboutSection 
+
+
+      {/* Daily Horoscope Section */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <DailyHoroscope />
+        </div>
+      </section>
+
+          <AboutSection 
         currentLanguage={currentLanguage} 
         t={t} 
       />
-      
       <TestimonialsSection 
         currentLanguage={currentLanguage} 
         t={t} 

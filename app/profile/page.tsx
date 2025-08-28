@@ -46,15 +46,21 @@ export default function ProfilePage() {
         full_name: profile.full_name || '',
         phone: profile.phone || ''
       });
+    } else if (user?.user_metadata) {
+      // Fallback to user metadata if no profile exists
+      setEditForm({
+        full_name: user.user_metadata.full_name || '',
+        phone: user.user_metadata.phone || ''
+      });
     }
-  }, [profile]);
+  }, [profile, user]);
 
   const handleEditToggle = () => {
     if (isEditing) {
       // Reset form when canceling
       setEditForm({
-        full_name: profile?.full_name || '',
-        phone: profile?.phone || ''
+        full_name: profile?.full_name || user?.user_metadata?.full_name || '',
+        phone: profile?.phone || user?.user_metadata?.phone || ''
       });
     }
     setIsEditing(!isEditing);
@@ -62,7 +68,7 @@ export default function ProfilePage() {
   };
 
   const handleSaveChanges = async () => {
-    if (!user || !profile) return;
+    if (!user) return;
 
     setIsUpdating(true);
     setUpdateMessage(null);
@@ -257,7 +263,7 @@ export default function ProfilePage() {
                 </Avatar>
                 <div>
                   <h3 className="font-semibold text-xl">
-                    {profile?.full_name || user.email?.split('@')[0] || 'User'}
+                    {profile?.full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User'}
                   </h3>
                   <p className="text-gray-600">{user.email}</p>
                   <div className="mt-2">
@@ -293,7 +299,7 @@ export default function ProfilePage() {
                       <div className="mt-1 p-3 bg-gray-50 rounded-md">
                         <div className="flex items-center space-x-2">
                           <User className="h-4 w-4 text-gray-500" />
-                          <span>{profile?.full_name || '-'}</span>
+                          <span>{profile?.full_name || user.user_metadata?.full_name || '-'}</span>
                         </div>
                       </div>
                     )}
@@ -316,7 +322,7 @@ export default function ProfilePage() {
                       <div className="mt-1 p-3 bg-gray-50 rounded-md">
                         <div className="flex items-center space-x-2">
                           <Phone className="h-4 w-4 text-gray-500" />
-                          <span>{profile?.phone || '-'}</span>
+                          <span>{profile?.phone || user.user_metadata?.phone || '-'}</span>
                         </div>
                       </div>
                     )}
