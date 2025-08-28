@@ -68,9 +68,32 @@ export function useAuth() {
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) throw new Error("No user logged in");
 
-    await api.updateProfile(user.id, updates);
-    const updatedProfile = await api.getProfile(user.id);
-    setProfile(updatedProfile);
+    try {
+      // get current session token from Supabase
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const response = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`, // 👈 add this
+        },
+        body: JSON.stringify(updates),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update profile");
+      }
+
+      const { profile: updatedProfile } = await response.json();
+      setProfile(updatedProfile);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      throw error;
+    }
   };
 
   return {

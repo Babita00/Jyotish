@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:link": "npx --yes supabase link",
+    "db:push": "npx --yes supabase db push",
+    "db:query": "npx --yes supabase db query"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

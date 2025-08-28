@@ -72,7 +72,10 @@ export async function POST(request: NextRequest) {
         email: e,
         password: p,
         options: {
-          data: { full_name: name, phone: ph || null },
+          data: {
+            full_name: name,
+            phone: ph || null,
+          },
           emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm`,
         },
       });

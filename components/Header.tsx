@@ -72,6 +72,43 @@ export default function Header() {
           </nav>
           
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-end">
+
+            
+            {/* Language Toggle */}
+            <div className="hidden sm:flex items-center space-x-6">
+              <Button
+                variant={currentLanguage === 'ne' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setLanguage('ne')}
+                className={currentLanguage === 'ne' ? 'bg-yellow-500 text-black' : 'text-white hover:bg-indigo-700'}
+              >
+                नेपाली
+              </Button>
+              <Button
+                variant={currentLanguage === 'en' ? 'secondary' : 'ghost'}
+                size="sm"
+                onClick={() => setLanguage('en')}
+                className={currentLanguage === 'en' ? 'bg-yellow-500 text-black' : 'text-white hover:bg-indigo-700'}
+              >
+                EN
+              </Button>
+            </div>
+            
+            {/* Call Button (icon on small screens, full on >= sm) */}
+            <a 
+              href="tel:+9779801234567" 
+              className="sm:hidden inline-flex items-center justify-center bg-yellow-500 text-black p-2 rounded-full hover:bg-yellow-400 transition-colors"
+              aria-label="Call Now"
+            >
+              <Phone className="h-4 w-4" />
+            </a>
+            <a 
+              href="tel:+9779801234567" 
+              className="hidden sm:flex items-center space-x-1 bg-yellow-500 text-black px-3 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
+            >
+              <Phone className="h-4 w-4" />
+              <span>Call Now</span>
+            </a>
             {/* Authentication Section */}
             {!loading && (
               <div className="flex items-center space-x-2 mr-2 sm:mr-4">
@@ -133,41 +170,6 @@ export default function Header() {
               </div>
             )}
 
-            {/* Language Toggle */}
-            <div className="hidden sm:flex items-center space-x-2">
-              <Button
-                variant={currentLanguage === 'ne' ? 'secondary' : 'ghost'}
-                size="sm"
-                onClick={() => setLanguage('ne')}
-                className={currentLanguage === 'ne' ? 'bg-yellow-500 text-black' : 'text-white hover:bg-indigo-700'}
-              >
-                नेपाली
-              </Button>
-              <Button
-                variant={currentLanguage === 'en' ? 'secondary' : 'ghost'}
-                size="sm"
-                onClick={() => setLanguage('en')}
-                className={currentLanguage === 'en' ? 'bg-yellow-500 text-black' : 'text-white hover:bg-indigo-700'}
-              >
-                EN
-              </Button>
-            </div>
-            
-            {/* Call Button (icon on small screens, full on >= sm) */}
-            <a 
-              href="tel:+9779801234567" 
-              className="sm:hidden inline-flex items-center justify-center bg-yellow-500 text-black p-2 rounded-full hover:bg-yellow-400 transition-colors"
-              aria-label="Call Now"
-            >
-              <Phone className="h-4 w-4" />
-            </a>
-            <a 
-              href="tel:+9779801234567" 
-              className="hidden sm:flex items-center space-x-1 bg-yellow-500 text-black px-3 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
-            >
-              <Phone className="h-4 w-4" />
-              <span>Call Now</span>
-            </a>
           </div>
         </div>
       </div>
