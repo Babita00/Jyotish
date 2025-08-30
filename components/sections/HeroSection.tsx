@@ -40,17 +40,17 @@ export default function HeroSection({ currentLanguage }: HeroSectionProps) {
             >
               {currentLanguage === "ne" ? (
                 <>
-                  <span className="block text-yellow-400">ग्रह गोचर</span>
+                  <span className="block text-yellow-400">ग्रह मन्त्र</span>
                   <span className="block text-2xl md:text-3xl lg:text-4xl font-medium text-gray-200 mt-2">
                     अनलाइन मार्गदर्शनमा
                   </span>
                 </>
               ) : (
                 <>
-                  <span className="block text-yellow-400">Graha Gochar</span>
+                  <span className="block text-yellow-400">Graha Mantra</span>
                   <span className="block text-2xl md:text-3xl lg:text-4xl font-medium text-gray-200 mt-2">
                     A warm welcome to you all for online guidance on Graha
-                    Gochar
+                    Mantra
                   </span>
                 </>
               )}
