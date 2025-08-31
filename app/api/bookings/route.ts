@@ -30,28 +30,42 @@ function isHHMMSS(input: string): boolean {
 
 export async function POST(request: NextRequest) {
   try {
-    // --- Supabase client with service role ---
+    // --- Create Supabase client ---
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     );
 
-    // --- Auth ---
+    // --- Enhanced Auth Check ---
     const authHeader = request.headers.get("authorization");
     const token = authHeader?.split(" ")[1];
-    if (!token)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+    if (!token) {
+      console.error("No authorization token provided");
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // ✅ Verify the JWT token
     const {
       data: { user },
       error: userError,
     } = await supabase.auth.getUser(token);
 
-    if (userError || !user)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (userError) {
+      console.error("Auth error:", userError.message);
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
+    if (!user) {
+      console.error("No user found for token");
+      return NextResponse.json({ error: "User not found" }, { status: 401 });
+    }
+
+    console.log("Authenticated user:", user.id); // ✅ Debug log
 
     // --- Parse request body ---
     const body = await request.json();
+    console.log("Request body:", body); // ✅ Debug log
 
     const requiredFields = [
       "full_name",
@@ -125,17 +139,17 @@ export async function POST(request: NextRequest) {
     // --- Handle optional payment fields ---
     const transactionId =
       paymentMethod === "later"
-        ? undefined
+        ? null // ✅ Use null instead of undefined
         : body.transaction_id
         ? sanitizeString(body.transaction_id)
-        : undefined;
+        : null;
 
     const paymentScreenshotUrl =
       paymentMethod === "later"
-        ? undefined
+        ? null // ✅ Use null instead of undefined
         : body.payment_screenshot_url
         ? sanitizeString(body.payment_screenshot_url)
-        : undefined;
+        : null;
 
     if (paymentMethod !== "later" && !transactionId) {
       return NextResponse.json(
@@ -149,6 +163,7 @@ export async function POST(request: NextRequest) {
 
     // --- Build booking payload ---
     const bookingPayload = {
+      user_id: user.id, // ✅ CRITICAL: This must match the authenticated user
       service_id: String(body.service_id),
       full_name: sanitizeString(body.full_name),
       phone: sanitizeString(body.phone),
@@ -160,11 +175,21 @@ export async function POST(request: NextRequest) {
       transaction_id: transactionId,
       payment_screenshot_url: paymentScreenshotUrl,
       notes: body.notes ? sanitizeString(body.notes) : "",
-      user_id: user.id,
     };
 
-    // --- Create booking ---
-    const booking = await api.createBooking(bookingPayload);
+    console.log("Final booking payload:", bookingPayload); // ✅ Debug log
+
+    // ✅ Use the authenticated Supabase client for RLS
+    const { data: booking, error: insertError } = await supabase
+      .from("bookings")
+      .insert(bookingPayload)
+      .select()
+      .single();
+
+    if (insertError) {
+      console.error("Supabase insert error:", insertError);
+      throw new Error(`Database error: ${insertError.message}`);
+    }
 
     return NextResponse.json({ booking }, { status: 201 });
   } catch (error: any) {

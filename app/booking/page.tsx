@@ -92,14 +92,22 @@ export default function BookingPage() {
       });
   };
 
-  const uploadPaymentScreenshot = async (file: File) => {
-    const form = new FormData();
-    form.append("file", file);
-    form.append("bucket", "payment-screenshots");
-    const response = await fetch("/api/upload", { method: "POST", body: form });
-    if (!response.ok) throw new Error("Failed to upload screenshot");
-    return (await response.json()).url;
-  };
+ const uploadPaymentScreenshot = async (file: File) => {
+  const filePath = `${Date.now()}-${file.name}`;
+
+  const { data, error } = await supabase.storage
+    .from("payment-screenshots")
+    .upload(filePath, file);
+
+  if (error) throw error;
+
+  const { data: { publicUrl } } = supabase.storage
+    .from("payment-screenshots")
+    .getPublicUrl(filePath);
+
+  return publicUrl;
+};
+
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -125,17 +133,21 @@ export default function BookingPage() {
         (s) => s.service_key === formData.service
       );
 
-      // ✅ Get logged-in user id (for RLS check)
-      const session = (await supabase.auth.getSession()).data.session;
-      const userId = session?.user?.id;
+      // ✅ Get logged-in user id MORE RELIABLY
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
 
-      if (!userId) {
+      if (sessionError || !session?.user?.id) {
         throw new Error("User not authenticated");
       }
 
+      const userId = session.user.id;
+
       const bookingData = {
-        user_id: userId, // ✅ Required for RLS
-        service_id: selectedService?.id || "", // Must be UUID, not "marriage"
+        user_id: userId, // ✅ This should match the authenticated user
+        service_id: selectedService?.id || "",
         full_name: formData.name,
         phone: formData.phone,
         email: formData.email,
@@ -154,19 +166,23 @@ export default function BookingPage() {
       };
 
       console.log("Booking data:", bookingData);
-
-      const token = session?.access_token;
+      console.log("User ID from session:", userId); // ✅ Debug log
 
       const response = await fetch("/api/bookings", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // ✅ ensures Supabase sees the user
+          Authorization: `Bearer ${session.access_token}`, // ✅ Use session token
         },
         body: JSON.stringify(bookingData),
       });
 
-      if (!response.ok) throw new Error("Failed to create booking");
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error("API Error:", responseData);
+        throw new Error(responseData.error || "Failed to create booking");
+      }
 
       toast({
         title: currentLanguage === "ne" ? "सफल!" : "Success!",
@@ -177,6 +193,7 @@ export default function BookingPage() {
       });
       setCurrentStep(5);
     } catch (error) {
+      console.error("Booking submission error:", error); // ✅ Better error logging
       toast({
         title: currentLanguage === "ne" ? "त्रुटि" : "Error",
         description:
