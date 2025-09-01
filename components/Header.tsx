@@ -63,8 +63,8 @@ export default function Header() {
             <Link href="/booking" className="hover:text-yellow-300 transition-colors font-medium">
               {t('nav.booking')}
             </Link>
-            <Link href="/blog" className="hover:text-yellow-300 transition-colors font-medium">
-              {t('nav.blog')}
+            <Link href="/our-service" className="hover:text-yellow-300 transition-colors font-medium">
+              {t('nav.service')}
             </Link>
             <Link href="/contact" className="hover:text-yellow-300 transition-colors font-medium">
               {t('nav.contact')}

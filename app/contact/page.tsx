@@ -1,409 +1,323 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { useLanguage } from '@/components/LanguageProvider';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
-import { 
-  MapPin, 
-  Phone, 
-  Mail, 
-  Clock, 
-  MessageCircle, 
-  Send,
-  Star,
-  Calendar,
-  Users
-} from 'lucide-react';
+import React, { useState } from "react";
+import Image, { StaticImageData } from "next/image";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import { useLanguage } from "@/components/LanguageProvider";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
+import { Send, Phone, Mail } from "lucide-react";
+import anil_khanal from "../assets/anil.jpg";
+import prabhakar_khanal from "../assets/prabhakar.jpg";
+
+interface Astrologer {
+  name: string;
+  image: StaticImageData; // Use StaticImageData for imported images
+  intro: string;
+  bio: string;
+  experience: string[];
+  services: string[];
+  specialty: string[];
+  contact: {
+    phone: string;
+    email: string;
+    address?: string;
+  };
+}
 
 export default function ContactPage() {
-  const { currentLanguage, t } = useLanguage();
+  const { currentLanguage } = useLanguage();
   const { toast } = useToast();
-  
+  const isNepali = currentLanguage === "ne";
+
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    subject: '',
-    message: ''
+    name: "",
+    phone: "",
+    email: "",
+    message: "",
   });
-  
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleChange = (field: keyof typeof formData, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
     try {
-      const response = await fetch('/api/contacts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
+      const res = await fetch("/api/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to send message');
-      }
-
+      if (!res.ok) throw new Error("Failed");
       toast({
-        title: currentLanguage === 'ne' ? 'सन्देश पठाइयो!' : 'Message Sent!',
-        description: currentLanguage === 'ne' 
-          ? 'तपाईंको सन्देश सफलतापूर्वक पठाइएको छ। हामी चाँडै जवाफ दिनेछौं।'
-          : 'Your message has been sent successfully. We will respond soon.',
+        title: isNepali ? "सन्देश पठाइयो!" : "Message Sent!",
+        description: isNepali
+          ? "तपाईंको सन्देश सफलतापूर्वक पठाइएको छ। हामी चाँडै जवाफ दिनेछौं।"
+          : "Your message has been sent successfully. We will respond soon.",
       });
-      
-      setFormData({ name: '', phone: '', email: '', subject: '', message: '' });
-    } catch (error) {
-      console.error('Error sending message:', error);
+      setFormData({ name: "", phone: "", email: "", message: "" });
+    } catch (err) {
+      console.error(err);
       toast({
-        title: currentLanguage === 'ne' ? 'त्रुटि' : 'Error',
-        description: currentLanguage === 'ne' 
-          ? 'सन्देश पठाउन समस्या भयो। कृपया फेरि प्रयास गर्नुहोस्।'
-          : 'Failed to send message. Please try again.',
-        variant: 'destructive'
+        title: isNepali ? "त्रुटि" : "Error",
+        description: isNepali
+          ? "सन्देश पठाउन समस्या भयो। कृपया फेरि प्रयास गर्नुहोस्।"
+          : "Failed to send message. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const contactInfo = [
+  const astrologers: Astrologer[] = [
     {
-      icon: <MapPin className="h-6 w-6" />,
-      titleEn: 'Office Address',
-      titleNe: 'कार्यालयको ठेगाना',
-      valueEn: 'Thamel, Kathmandu-29, Nepal',
-      valueNe: 'थमेल, काठमाडौं-२९, नेपाल',
-      color: 'text-blue-600'
+      name: "ज्योतिष अनिल खनाल",
+      image: anil_khanal,
+      intro: `वैदिक ज्योतिष विद्या मानव जीवनको दर्पण हो। जन्म समय, स्थान र ग्रह–नक्षत्रको स्थिति अनुसार मानिसको जीवनयात्रा—सुख–दुःख, धन, विवाह, सन्तान, स्वास्थ्य, शिक्षा, व्यवसाय र भविष्यको बाटो स्पष्ट हुन्छ।`,
+      bio: `श्री खनालजी बाल्यकालदेखि नै धर्म, अध्यात्म र वैदिक ज्योतिष प्रति गहिरो लगाव राख्ने व्यक्तित्व हुनुहुन्छ। गुरुकुलीय परम्परादेखि निरन्तर अध्ययन गर्दै हाल नेपाल संस्कृत विश्वविद्यालयमा फलित ज्योतिष विषयको गहन अध्ययन गरिरहनुभएको छ।`,
+      experience: [
+        "विगत ४–५ वर्षदेखि निरन्तर चिनाहरू (कुण्डली) निर्माण, विश्लेषण र भविष्यवाणी गर्दै आउनु।",
+        "राशि, नक्षत्र, ग्रहदशा, योग, दोष र ग्रह–गोचरको प्रभाव बारे गहन अध्ययन।",
+        "विवाह, धन, शिक्षा, स्वास्थ्य, सन्तान, विदेश तथा व्यवसाय सम्बन्धी परामर्शमा विशेष अनुभव।",
+        "बृहद्पाराशर होरा शास्त्र, जातक पारिजात, फलदीपिका, सारावली लगायतका प्राचीन ग्रन्थमा आधारित अनुसन्धान र अभ्यास।",
+        "गुरुकुलीय साधनादेखि लिएर विश्वविद्यालयीय अध्ययनसम्म निरन्तर फलित ज्योतिषमा साधना।",
+      ],
+      services: [
+        "जन्मकुण्डली निर्माण, विश्लेषण र भविष्यवाणी",
+        "विवाह, धन, शिक्षा, स्वास्थ्य, सन्तान, विदेश तथा व्यवसाय सम्बन्धी परामर्श",
+        "ग्रह–दोष निवारण: मन्त्र–जप, दान, रत्नधारण, पूजा–विधि",
+        "योग–दोष विश्लेषण र समाधान",
+        "दशा–गोचर अनुसार जीवन मार्गदर्शन",
+      ],
+      specialty: [
+        "गुरुकुलदेखि विश्वविद्यालयसम्म प्राप्त शास्त्रीय आधार र व्यवहारिक अनुभवको संयोजन",
+        "सरल र सहज भाषामा जीवन–मार्गदर्शन",
+        "प्रत्येक व्यक्तिको कुण्डली अनुसार विशिष्ट परामर्श",
+        "ग्रह–नक्षत्रको प्रभाव र उपायहरूको व्यावहारिक प्रस्तुति",
+      ],
+      contact: {
+        phone: "9866096040",
+        email: " anilkhanal012@gmail.com",
+        address:
+          "शितगंगा नगरपालिका–२, अर्घाखाँची | हाल: टोखा नगरपालिका–६, काठमाडौं",
+      },
     },
     {
-      icon: <Phone className="h-6 w-6" />,
-      titleEn: 'Phone Number',
-      titleNe: 'फोन नम्बर',
-      valueEn: '+977 9801234567',
-      valueNe: '+९७७ ९८०१२३४५६७',
-      color: 'text-green-600'
+      name: "ज्योतिष प्रभाकर खनाल",
+      image: prabhakar_khanal,
+      intro: `वैदिक ज्योतिष शास्त्र मानव जीवनको दर्पण हो। जन्म समय, स्थान र ग्रह–नक्षत्रको स्थिति अनुसार मानिसको जीवनयात्रा, सुख–दुःख, स्वास्थ्य, शिक्षा, विवाह, धन, व्यवसाय तथा भविष्यका सम्भावनाबारे मार्गदर्शन गर्ने गहन विद्या नै ज्योतिष शास्त्र हो।`,
+      bio: `यसै गहन विद्याप्रति समर्पित ज्यो. प्रभाकर खनाल विगत तिन वर्षदेखि निरन्तर वैदिक ज्योतिष सेवा प्रदान गर्दै आउनुभएको छ। नेपाल संस्कृत विश्वविद्यालयमा फलित ज्योतिष अध्ययनरत उहाँमा संस्कृत तथा धर्म–संस्कृति प्रतिको लगाव मात्र नभई संस्कृति, पर्यटन तथा नागरिक उड्डयन मन्त्रालय अन्तर्गतको नेपाल पञ्चाङ्ग निर्णायक विकास समितिबाट ज्योतिष प्रशिक्षण लिई सरकारी तवरबाट प्रमाणित (Certified) ज्योतिषी पनि हुनुहुन्छ।`,
+      experience: [
+        "बृहत् पराशर होरा शास्त्र, बृहत् जातक, जातक पारिजात, सारावली र फलदीपिका जस्ता प्राचीन ग्रन्थहरूमा आधारित अध्ययन।",
+        "फलादेश, व्यक्तिगत परामर्श, रत्न ज्ञान, ग्रह पूजा तथा अनलाइन पुजा सेवा।",
+        "ग्रह–दोष निवारणका लागि वैज्ञानिक दृष्टिकोणमा आधारित ज्योतिषीय उपाय।",
+      ],
+      services: [
+        "व्यक्तिगत परामर्श",
+        "जन्मकुण्डली विश्लेषण",
+        "ग्रह पूजा र उपाय",
+        "अनलाइन पुजा सेवा",
+      ],
+      specialty: [
+        "सरल र व्यावहारिक परामर्श",
+        "शास्त्रीय आधारमा उपाय प्रदान गर्ने दक्षता",
+        "वैदिक ज्ञानलाई आधुनिक जीवनमा व्यवहारिक बनाउने दृष्टिकोण",
+      ],
+      contact: {
+        phone: "9863474528",
+        email: "prabhakarkhanal4@gmail.com",
+      },
     },
-    {
-      icon: <Mail className="h-6 w-6" />,
-      titleEn: 'Email Address',
-      titleNe: 'इमेल ठेगाना',
-      valueEn: 'info@jyotishcenter.com',
-      valueNe: 'info@jyotishcenter.com',
-      color: 'text-purple-600'
-    },
-    {
-      icon: <Clock className="h-6 w-6" />,
-      titleEn: 'Working Hours',
-      titleNe: 'कार्य समय',
-      valueEn: 'Sun-Fri: 9:00 AM - 6:00 PM',
-      valueNe: 'आइत-शुक्र: बिहान ९:०० - साँझ ६:००',
-      color: 'text-orange-600'
-    }
-  ];
-
-  const quickStats = [
-    {
-      icon: <Users className="h-8 w-8 text-blue-500" />,
-      value: '5000+',
-      labelEn: 'Happy Clients',
-      labelNe: 'खुसी ग्राहकहरू'
-    },
-    {
-      icon: <Star className="h-8 w-8 text-yellow-500" />,
-      value: '15+',
-      labelEn: 'Years Experience',
-      labelNe: 'वर्ष अनुभव'
-    },
-    {
-      icon: <Calendar className="h-8 w-8 text-green-500" />,
-      value: '98%',
-      labelEn: 'Accuracy Rate',
-      labelNe: 'सटीकता दर'
-    }
   ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       <Header />
-      
-      <div className="container mx-auto px-4 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <h1 className={`text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-indigo-900 to-purple-800 bg-clip-text text-transparent ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-            {t('contact.title')}
-          </h1>
-          <p className={`text-xl text-gray-600 max-w-2xl mx-auto mb-8 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-            {currentLanguage === 'ne' 
-              ? 'हाम्रो विशेषज्ञ ज्योतिषीहरूसँग सम्पर्क राख्नुहोस् र आफ्नो जीवनको लागि सही मार्गदर्शन पाउनुहोस्'
-              : 'Get in touch with our expert astrologers and receive the right guidance for your life'
-            }
-          </p>
-          
-          {/* Quick Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
-            {quickStats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="flex justify-center mb-2">
-                  {stat.icon}
-                </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">{stat.value}</div>
-                <div className={`text-sm text-gray-600 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                  {currentLanguage === 'ne' ? stat.labelNe : stat.labelEn}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          {/* Contact Form */}
-          <Card className="shadow-xl border-0">
-            <CardHeader>
-              <CardTitle className={`text-2xl font-bold text-center ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                {currentLanguage === 'ne' ? 'सन्देश पठाउनुहोस्' : 'Send us a Message'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-6">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <Label htmlFor="name" className={currentLanguage === 'ne' ? 'font-nepali' : ''}>
-                    {currentLanguage === 'ne' ? 'पूरा नाम' : 'Full Name'} *
-                  </Label>
-                  <Input
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
-                    className="mt-2"
-                    placeholder={currentLanguage === 'ne' ? 'तपाईंको नाम लेख्नुहोस्' : 'Enter your name'}
-                    required
+      {/* Hero Section */}
+      <div className="text-center py-12 bg-gradient-to-r from-yellow-400 to-purple-600 text-white shadow-lg">
+        <h1
+          className={`text-4xl md:text-5xl font-bold ${
+            isNepali ? "font-nepali" : ""
+          }`}
+        >
+          {isNepali
+            ? "हाम्रो ज्योतिषीहरूसँग सम्पर्क गर्नुहोस्"
+            : "Get in Touch with Our Astrologers"}
+        </h1>
+        <p
+          className={`mt-4 text-lg md:text-xl ${isNepali ? "font-nepali" : ""}`}
+        >
+          {isNepali
+            ? "सही मार्गदर्शनको लागि अनुभवी ज्योतिषीहरूसँग सम्पर्क गर्नुहोस्।"
+            : "Contact our expert astrologers for personalized guidance."}
+        </p>
+      </div>
+
+      {/* Astrologers Section */}
+      <div className="container mx-auto px-4 py-12 grid gap-12 md:grid-cols-2">
+        {astrologers.map((astro, idx) => (
+          <Card
+            key={idx}
+            className="shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border-0 bg-white rounded-xl overflow-hidden pt-44"
+          >
+            {/* Profile Picture */}
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
+              <div className="w-60 h-60 rounded-full p-1 bg-gradient-to-r from-pink-400 to-red-500 shadow-lg">
+                <div className="w-full h-full rounded-full overflow-hidden">
+                  <Image
+                    src={astro.image}
+                    alt={astro.name}
+                    width={144}
+                    height={144}
+                    className="w-full h-full object-cover"
                   />
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="phone" className={currentLanguage === 'ne' ? 'font-nepali' : ''}>
-                      {currentLanguage === 'ne' ? 'फोन नम्बर' : 'Phone Number'} *
-                    </Label>
-                    <Input
-                      id="phone"
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className="mt-2"
-                      placeholder="+977 98XXXXXXXX"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="email" className={currentLanguage === 'ne' ? 'font-nepali' : ''}>
-                      {currentLanguage === 'ne' ? 'इमेल ठेगाना' : 'Email Address'} *
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      className="mt-2"
-                      placeholder="your.email@example.com"
-                      required
-                    />
-                  </div>
-                </div>
-                
-                <div>
-                  <Label htmlFor="subject" className={currentLanguage === 'ne' ? 'font-nepali' : ''}>
-                    {currentLanguage === 'ne' ? 'विषय' : 'Subject'} *
-                  </Label>
-                  <Input
-                    id="subject"
-                    value={formData.subject}
-                    onChange={(e) => handleInputChange('subject', e.target.value)}
-                    className="mt-2"
-                    placeholder={currentLanguage === 'ne' ? 'सन्देशको विषय' : 'Message subject'}
-                    required
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="message" className={currentLanguage === 'ne' ? 'font-nepali' : ''}>
-                    {currentLanguage === 'ne' ? 'सन्देश' : 'Message'} *
-                  </Label>
-                  <Textarea
-                    id="message"
-                    value={formData.message}
-                    onChange={(e) => handleInputChange('message', e.target.value)}
-                    className={`mt-2 min-h-[120px] ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}
-                    placeholder={currentLanguage === 'ne' ? 'तपाईंको सन्देश यहाँ लेख्नुहोस्...' : 'Write your message here...'}
-                    required
-                  />
-                </div>
-                
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-3 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}
-                >
-                  {isSubmitting ? (
-                    currentLanguage === 'ne' ? 'पठाउँदै...' : 'Sending...'
-                  ) : (
-                    <>
-                      <Send className="mr-2 h-4 w-4" />
-                      {currentLanguage === 'ne' ? 'सन्देश पठाउनुहोस्' : 'Send Message'}
-                    </>
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-
-          {/* Contact Information */}
-          <div className="space-y-6">
-            <Card className="shadow-xl border-0">
-              <CardHeader>
-                <CardTitle className={`text-2xl font-bold text-center ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                  {currentLanguage === 'ne' ? 'सम्पर्क जानकारी' : 'Contact Information'}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <div className="space-y-6">
-                  {contactInfo.map((info, index) => (
-                    <div key={index} className="flex items-start space-x-4">
-                      <div className={`${info.color} mt-1`}>
-                        {info.icon}
-                      </div>
-                      <div>
-                        <h3 className={`font-semibold text-gray-900 mb-1 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                          {currentLanguage === 'ne' ? info.titleNe : info.titleEn}
-                        </h3>
-                        <p className={`text-gray-600 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                          {currentLanguage === 'ne' ? info.valueNe : info.valueEn}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* WhatsApp Card */}
-            <Card className="shadow-xl border-0 bg-gradient-to-r from-green-500 to-green-600 text-white">
-              <CardContent className="p-6 text-center">
-                <MessageCircle className="h-12 w-12 mx-auto mb-4" />
-                <h3 className={`text-xl font-bold mb-2 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                  {currentLanguage === 'ne' ? 'तुरुन्त जवाफको लागि' : 'For Instant Response'}
-                </h3>
-                <p className={`mb-4 text-green-100 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                  {currentLanguage === 'ne' 
-                    ? 'व्हाट्सएपमा सन्देश पठाउनुहोस् र तुरुन्त जवाफ पाउनुहोस्'
-                    : 'Message us on WhatsApp for instant response'
-                  }
-                </p>
-                <Button 
-                  asChild
-                  className={`bg-white text-green-600 hover:bg-green-50 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}
-                >
-                  <a 
-                    href="https://wa.me/9779801234567" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                  >
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    {currentLanguage === 'ne' ? 'व्हाट्सएप गर्नुहोस्' : 'Chat on WhatsApp'}
-                  </a>
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Map Placeholder */}
-            <Card className="shadow-xl border-0">
-              <CardContent className="p-0">
-                <div className="w-full h-64 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-lg flex items-center justify-center">
-                  <div className="text-center">
-                    <MapPin className="h-12 w-12 text-indigo-500 mx-auto mb-3" />
-                    <p className={`text-gray-600 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                      {currentLanguage === 'ne' ? 'नक्सा लोड हुँदै...' : 'Map Loading...'}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* FAQ Section */}
-        <Card className="mt-16 shadow-xl border-0">
-          <CardHeader className="text-center">
-            <CardTitle className={`text-2xl font-bold ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-              {currentLanguage === 'ne' ? 'बारम्बार सोधिने प्रश्नहरू' : 'Frequently Asked Questions'}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
-                <div>
-                  <h4 className={`font-semibold text-gray-900 mb-2 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                    {currentLanguage === 'ne' ? 'परामर्श कत्ति समयको हुन्छ?' : 'How long is a consultation?'}
-                  </h4>
-                  <p className={`text-gray-600 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                    {currentLanguage === 'ne' 
-                      ? 'सामान्यतः एक परामर्श ३०-४५ मिनेटको हुन्छ।'
-                      : 'Typically, a consultation lasts 30-45 minutes.'
-                    }
-                  </p>
-                </div>
-                <div>
-                  <h4 className={`font-semibold text-gray-900 mb-2 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                    {currentLanguage === 'ne' ? 'अनलाइन परामर्श कसरी हुन्छ?' : 'How does online consultation work?'}
-                  </h4>
-                  <p className={`text-gray-600 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                    {currentLanguage === 'ne'
-                      ? 'फोन वा भिडियो कलमार्फत अनलाइन परामर्श गर्न सकिन्छ।'
-                      : 'Online consultation is conducted via phone or video call.'
-                    }
-                  </p>
-                </div>
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <h4 className={`font-semibold text-gray-900 mb-2 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                    {currentLanguage === 'ne' ? 'रिपोर्ट कहिले पाइन्छ?' : 'When will I receive the report?'}
-                  </h4>
-                  <p className={`text-gray-600 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                    {currentLanguage === 'ne'
-                      ? 'परामर्श पछि २४ घण्टा भित्र विस्तृत रिपोर्ट पाइन्छ।'
-                      : 'You will receive a detailed report within 24 hours after consultation.'
-                    }
-                  </p>
-                </div>
-                <div>
-                  <h4 className={`font-semibold text-gray-900 mb-2 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                    {currentLanguage === 'ne' ? 'के कुराहरू आवश्यक छ?' : 'What information is needed?'}
-                  </h4>
-                  <p className={`text-gray-600 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
-                    {currentLanguage === 'ne'
-                      ? 'जन्म मिति, समय र स्थान आवश्यक हुन्छ।'
-                      : 'Birth date, time, and place are required.'
-                    }
-                  </p>
                 </div>
               </div>
             </div>
+
+            <CardContent className="pt-20 space-y-4">
+              <h2
+                className={`text-2xl font-bold text-center ${
+                  isNepali ? "font-nepali" : ""
+                }`}
+              >
+                {astro.name}
+              </h2>
+              <p
+                className={`text-gray-700 text-center ${
+                  isNepali ? "font-nepali" : ""
+                }`}
+              >
+                {astro.intro}
+              </p>
+              <p className={`text-gray-600 ${isNepali ? "font-nepali" : ""}`}>
+                {astro.bio}
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div>
+                  <h3
+                    className={`font-semibold ${isNepali ? "font-nepali" : ""}`}
+                  >
+                    🔯 अनुभव र अध्ययन
+                  </h3>
+                  <ul
+                    className={`list-disc ml-5 ${
+                      isNepali ? "font-nepali" : ""
+                    }`}
+                  >
+                    {astro.experience.map((exp, i) => (
+                      <li key={i}>{exp}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h3
+                    className={`font-semibold ${isNepali ? "font-nepali" : ""}`}
+                  >
+                    🔯 सेवाहरू
+                  </h3>
+                  <ul
+                    className={`list-disc ml-5 ${
+                      isNepali ? "font-nepali" : ""
+                    }`}
+                  >
+                    {astro.services.map((srv, i) => (
+                      <li key={i}>{srv}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="mt-4">
+                <h3
+                  className={`font-semibold ${isNepali ? "font-nepali" : ""}`}
+                >
+                  📞 सम्पर्क
+                </h3>
+                <p className="flex items-center">
+                  <Phone className="mr-2 h-4 w-4" /> {astro.contact.phone}
+                </p>
+                <p className="flex items-center">
+                  <Mail className="mr-2 h-4 w-4" /> {astro.contact.email}
+                </p>
+                {astro.contact.address && (
+                  <p
+                    className={`text-gray-500 ${isNepali ? "font-nepali" : ""}`}
+                  >
+                    {astro.contact.address}
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Contact Form Section */}
+      <div className="container mx-auto px-4 py-12 max-w-md">
+        <Card className="shadow-xl border-0 bg-gradient-to-r from-blue-400 to-indigo-500 text-white">
+          <CardHeader>
+            <CardTitle
+              className={`text-xl font-bold text-center ${
+                isNepali ? "font-nepali" : ""
+              }`}
+            >
+              {isNepali ? "सन्देश पठाउनुहोस्" : "Send Us a Message"}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Input
+                placeholder={isNepali ? "तपाईंको नाम" : "Your Name"}
+                value={formData.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+                required
+              />
+              <Input
+                placeholder={isNepali ? "फोन नम्बर" : "Phone Number"}
+                value={formData.phone}
+                onChange={(e) => handleChange("phone", e.target.value)}
+                required
+              />
+              <Input
+                placeholder={isNepali ? "इमेल" : "Email"}
+                type="email"
+                value={formData.email}
+                onChange={(e) => handleChange("email", e.target.value)}
+                required
+              />
+              <Textarea
+                placeholder={
+                  isNepali ? "सन्देश लेख्नुहोस्..." : "Write your message..."
+                }
+                value={formData.message}
+                onChange={(e) => handleChange("message", e.target.value)}
+                required
+              />
+              <Button
+                type="submit"
+                className="w-full flex items-center justify-center bg-white text-blue-600 hover:bg-blue-50 transition-colors duration-300"
+                disabled={isSubmitting}
+              >
+                <Send className="mr-2 h-4 w-4" />{" "}
+                {isNepali ? "पठाउनुहोस्" : "Send"}
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>
-      
+
       <Footer />
     </div>
   );

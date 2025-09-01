@@ -1,7 +1,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { CheckCircle, Star, Heart, Briefcase, Activity } from "lucide-react";
+import { CheckCircle, Star, Heart, Briefcase, Activity, Type, Phone, Video, MapPin } from "lucide-react";
 
 interface Service {
   service_key: string;
@@ -28,19 +28,28 @@ export const ServiceSelectionStep: React.FC<ServiceSelectionStepProps> = ({
   currentLanguage,
 }) => {
   const getServiceIcon = (serviceKey: string) => {
-    switch (serviceKey) {
-      case "kundali":
-        return <Star className="h-5 w-5 text-yellow-500" />;
-      case "marriage":
-        return <Heart className="h-5 w-5 text-pink-500" />;
-      case "career":
-        return <Briefcase className="h-5 w-5 text-blue-500" />;
-      case "health":
-        return <Activity className="h-5 w-5 text-green-500" />;
-      default:
-        return <Star className="h-5 w-5 text-gray-500" />;
-    }
-  };
+  switch (serviceKey) {
+    case "all-services":
+      return <Star className="h-5 w-5 text-yellow-500" />;
+    case "marriage":
+      return <Heart className="h-5 w-5 text-pink-500" />;
+    case "career":
+      return <Briefcase className="h-5 w-5 text-blue-500" />;
+    case "health":
+      return <Activity className="h-5 w-5 text-green-500" />;
+    case "vastu":
+      return <Type className="h-5 w-5 text-purple-500" />;
+    case "karmakanda":
+      return <Phone className="h-5 w-5 text-orange-500" />;
+    case "kundali-creation":
+      return <Video className="h-5 w-5 text-indigo-500" />;
+    case "gemstone":
+      return <MapPin className="h-5 w-5 text-emerald-500" />;
+    default:
+      return <Star className="h-5 w-5 text-gray-500" />;
+  }
+};
+
 
   return (
     <div className="space-y-8">

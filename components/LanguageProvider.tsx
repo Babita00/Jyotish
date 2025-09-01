@@ -20,7 +20,7 @@ const translations = {
     "nav.home": "Home",
     "nav.services": "Services",
     "nav.booking": "Book Consultation",
-    "nav.blog": "Blog",
+    "nav.service": "Our Service",
     "nav.contact": "Contact",
     "nav.admin": "Admin",
 
@@ -101,7 +101,7 @@ const translations = {
     "nav.home": "होम",
     "nav.services": "सेवाहरू",
     "nav.booking": "परामर्श बुक गर्नुहोस्",
-    "nav.blog": "ब्लग",
+    "nav.service": "हाम्रा सेवा",
     "nav.contact": "सम्पर्क",
     "nav.admin": "एडमिन",
 
