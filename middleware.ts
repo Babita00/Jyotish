@@ -6,33 +6,30 @@ export async function middleware(req: NextRequest) {
   const res = NextResponse.next();
   const supabase = createMiddlewareClient({ req, res });
 
-  // Refresh session if expired - required for Server Components
+  // Always refresh/validate session
   const {
     data: { session },
   } = await supabase.auth.getSession();
 
-  // Protected routes that require authentication
-  // Note: Booking is gated client-side via ProtectedRoute and API routes enforce auth.
-  // Keeping only admin here avoids false negatives from edge/session desync.
-  const protectedRoutes = ["/admin"];
-  const adminRoutes = ["/admin"];
+  // Define routes
+  const protectedRoutes = ["/dashboard", "/settings"]; // 👈 normal protected
+  const adminRoutes = ["/admin"]; // 👈 admin-only
+
+  const { pathname } = req.nextUrl;
 
   const isProtectedRoute = protectedRoutes.some((route) =>
-    req.nextUrl.pathname.startsWith(route)
+    pathname.startsWith(route)
   );
+  const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
 
-  const isAdminRoute = adminRoutes.some((route) =>
-    req.nextUrl.pathname.startsWith(route)
-  );
-
-  // Redirect to login if accessing protected route without session
-  if (isProtectedRoute && !session) {
+  // 🔒 Protected routes require login
+  if ((isProtectedRoute || isAdminRoute) && !session) {
     const redirectUrl = new URL("/login", req.url);
-    redirectUrl.searchParams.set("redirectTo", req.nextUrl.pathname);
+    redirectUrl.searchParams.set("redirectTo", pathname);
     return NextResponse.redirect(redirectUrl);
   }
 
-  // Check admin access for admin routes
+  // 👮 Admin routes require admin role
   if (isAdminRoute && session) {
     const { data: profile } = await supabase
       .from("profiles")
@@ -45,11 +42,8 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // Redirect authenticated users away from auth pages
-  if (
-    session &&
-    (req.nextUrl.pathname === "/login" || req.nextUrl.pathname === "/register")
-  ) {
+  // 🚫 Auth pages are not for logged-in users
+  if (session && (pathname === "/login" || pathname === "/register")) {
     return NextResponse.redirect(new URL("/", req.url));
   }
 
@@ -58,13 +52,7 @@ export async function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
+    // Match everything except Next.js internals, images, favicon
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

@@ -21,15 +21,18 @@ export default function ZodiacInfoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col">
       <Header />
 
-      <div className="container mx-auto px-4 py-8">
+      <main className="flex-grow container mx-auto px-4 py-8">
         {/* Back Button */}
         <div className="mb-6">
           <Link href="/">
-            <Button variant="outline" className="flex items-center space-x-2">
-              <ArrowLeft className="h-4 w-4" />
+            <Button
+              variant="outline"
+              className="flex items-center space-x-2 text-sm sm:text-base"
+            >
+              <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
               <span className={currentLanguage === 'ne' ? 'font-nepali' : ''}>
                 {currentLanguage === 'ne' ? 'फिर्ता' : 'Back'}
               </span>
@@ -38,16 +41,24 @@ export default function ZodiacInfoPage() {
         </div>
 
         {/* Page Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 px-2 sm:px-0">
           <div className="flex justify-center mb-4">
             <div className="p-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full">
-              <Sparkles className="h-8 w-8 text-white" />
+              <Sparkles className="h-8 w-8 sm:h-10 sm:w-10 text-white" />
             </div>
           </div>
-          <h1 className={`text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-900 to-purple-800 bg-clip-text text-transparent ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
+          <h1
+            className={`text-2xl sm:text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-900 to-purple-800 bg-clip-text text-transparent ${
+              currentLanguage === 'ne' ? 'font-nepali' : ''
+            }`}
+          >
             {currentLanguage === 'ne' ? 'राशी विवरण' : 'Zodiac Details'}
           </h1>
-          <p className={`text-lg text-gray-600 max-w-2xl mx-auto ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
+          <p
+            className={`text-sm sm:text-base md:text-lg text-gray-600 max-w-xl mx-auto ${
+              currentLanguage === 'ne' ? 'font-nepali' : ''
+            }`}
+          >
             {currentLanguage === 'ne'
               ? 'आफ्नो राशी छान्नुहोस् र विस्तृत जानकारी पाउनुहोस्'
               : 'Select your zodiac sign to view detailed information'}
@@ -57,12 +68,16 @@ export default function ZodiacInfoPage() {
         {/* Selector + Details */}
         <Card className="shadow-xl border-0 overflow-hidden">
           <CardHeader className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
-            <CardTitle className={`text-2xl text-center ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
+            <CardTitle
+              className={`text-xl sm:text-2xl text-center ${
+                currentLanguage === 'ne' ? 'font-nepali' : ''
+              }`}
+            >
               {currentLanguage === 'ne' ? 'राशी चयन' : 'Select Zodiac'}
             </CardTitle>
           </CardHeader>
-          <CardContent className="p-6">
-            <div className="space-y-8">
+          <CardContent className="p-4 sm:p-6">
+            <div className="space-y-6 sm:space-y-8">
               <ZodiacSelector
                 selectedZodiac={selectedZodiac}
                 onZodiacSelect={setSelectedZodiac}
@@ -77,30 +92,36 @@ export default function ZodiacInfoPage() {
         </Card>
 
         {/* CTA */}
-        <div className="text-center mt-12">
+        <div className="text-center mt-10 sm:mt-12 px-2 sm:px-0">
           <Card className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-0">
-            <CardContent className="p-8">
-              <h3 className={`text-2xl font-bold mb-4 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
+            <CardContent className="p-6 sm:p-8">
+              <h3
+                className={`text-xl sm:text-2xl md:text-3xl font-bold mb-4 ${
+                  currentLanguage === 'ne' ? 'font-nepali' : ''
+                }`}
+              >
                 {currentLanguage === 'ne' ? 'व्यक्तिगत ज्योतिष परामर्श' : 'Personal Astrology Consultation'}
               </h3>
-              <p className={`text-indigo-100 mb-6 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}>
+              <p
+                className={`text-sm sm:text-base md:text-lg text-indigo-100 mb-6 ${
+                  currentLanguage === 'ne' ? 'font-nepali' : ''
+                }`}
+              >
                 {currentLanguage === 'ne'
                   ? 'आफ्नो राशी अनुसार विस्तृत विश्लेषण र मार्गदर्शन पाउन आजै बुक गर्नुहोस्'
                   : 'Book now to get detailed analysis and guidance based on your zodiac sign'}
               </p>
               <Link href="/booking">
-                <Button className="bg-yellow-500 text-black hover:bg-yellow-400 px-8 py-3 text-lg font-semibold">
+                <Button className="bg-yellow-500 text-black hover:bg-yellow-400 px-6 sm:px-8 py-2 sm:py-3 text-sm sm:text-lg font-semibold">
                   {currentLanguage === 'ne' ? 'परामर्श बुक गर्नुहोस्' : 'Book Consultation'}
                 </Button>
               </Link>
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
 
       <Footer />
     </div>
   );
 }
-
-

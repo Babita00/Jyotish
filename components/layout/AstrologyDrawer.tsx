@@ -92,13 +92,13 @@ const { currentLanguage, setLanguage } = useLanguage();
             </Link>
 
             <Link
-              href="/blog"
+              href="/our-service"
               onClick={closeDrawer}
               className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-indigo-50 rounded-lg border border-gray-200 hover:from-indigo-50 hover:to-purple-50 hover:border-indigo-300 transition-all duration-300 hover:shadow-md"
             >
               <div className="flex items-center space-x-3">
                 <FileText className="w-5 h-5 text-gray-700" />
-                <span className="font-medium text-gray-900">Blog</span>
+                <span className="font-medium text-gray-900"> Our Service</span>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400" />
             </Link>

@@ -1,21 +1,25 @@
 export const ROUTES = {
-  HOME: '/',
-  BOOKING: '/booking',
-  BLOG: '/blog',
-  CONTACT: '/contact',
-  ADMIN: '/admin',
+  HOME: "/",
+  BOOKING: "/booking",
+  BLOG: "/our-service",
+  CONTACT: "/contact",
+  ADMIN: "/admin",
   SERVICES: {
-    BASE: '/services',
-    KUNDALI: '/services/kundali',
-    MARRIAGE: '/services/marriage',
-    CAREER: '/services/career',
-    HEALTH: '/services/health'
+    BASE: "/services",
+    KUNDALI: "/services/kundali-creation",
+    MARRIAGE: "/services/marriage",
+    CAREER: "/services/career",
+    HEALTH: "/services/health",
+    KARMAKANDA: "/services/karmakanda",
+    VASTU: "/services/vastu",
+    GEMSTONE: "/services/gemstone",
+    ALLSERVICE: "/services/all-services",
   },
   API: {
-    SERVICES: '/api/services',
-    BOOKINGS: '/api/bookings',
-    CONTACTS: '/api/contacts',
-    BLOG: '/api/blog',
-    UPLOAD: '/api/upload'
-  }
+    SERVICES: "/api/services",
+    BOOKINGS: "/api/bookings",
+    CONTACTS: "/api/contacts",
+    BLOG: "/api/our-service",
+    UPLOAD: "/api/upload",
+  },
 } as const;

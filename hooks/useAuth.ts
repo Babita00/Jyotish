@@ -1,39 +1,55 @@
 import { useState, useEffect } from "react";
 import { User } from "@supabase/supabase-js";
 import { supabase, api, Profile } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const router = useRouter();
+
   useEffect(() => {
-    // Get initial session
-    const getInitialSession = async () => {
+    let mounted = true;
+
+    const initAuth = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
+
+      if (!mounted) return;
+
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        const userProfile = await api.getProfile(session.user.id);
-        setProfile(userProfile);
+        try {
+          const userProfile = await api.getProfile(session.user.id);
+          if (mounted) setProfile(userProfile);
+        } catch (err) {
+          console.error("Failed to fetch profile:", err);
+        }
       }
 
       setLoading(false);
     };
 
-    getInitialSession();
+    initAuth();
 
-    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) return;
+
       setUser(session?.user ?? null);
 
       if (session?.user) {
-        const userProfile = await api.getProfile(session.user.id);
-        setProfile(userProfile);
+        try {
+          const userProfile = await api.getProfile(session.user.id);
+          setProfile(userProfile);
+        } catch (err) {
+          console.error("Failed to fetch profile:", err);
+        }
       } else {
         setProfile(null);
       }
@@ -41,7 +57,10 @@ export function useAuth() {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signUp = async (
@@ -49,13 +68,26 @@ export function useAuth() {
     password: string,
     fullName: string,
     phone?: string
-  ) => {
-    const data = await api.signUp(email, password, fullName, phone);
-    return data;
-  };
+  ) => api.signUp(email, password, fullName, phone);
 
   const signIn = async (email: string, password: string) => {
     const data = await api.signIn(email, password);
+
+    if (data?.session) {
+      try {
+        const userProfile = await api.getProfile(data.session.user.id);
+        setProfile(userProfile);
+
+        if (userProfile?.role === "admin") {
+          router.push("/admin");
+        } else {
+          router.push("/");
+        }
+      } catch (err) {
+        console.error("Failed to fetch profile after sign-in", err);
+      }
+    }
+
     return data;
   };
 
@@ -68,32 +100,26 @@ export function useAuth() {
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) throw new Error("No user logged in");
 
-    try {
-      // get current session token from Supabase
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
 
-      const response = await fetch("/api/profile", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.access_token}`, // 👈 add this
-        },
-        body: JSON.stringify(updates),
-      });
+    const response = await fetch("/api/profile", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+      body: JSON.stringify(updates),
+    });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to update profile");
-      }
-
-      const { profile: updatedProfile } = await response.json();
-      setProfile(updatedProfile);
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      throw error;
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to update profile");
     }
+
+    const { profile: updatedProfile } = await response.json();
+    setProfile(updatedProfile);
   };
 
   return {

@@ -31,9 +31,14 @@ export async function GET(request: NextRequest) {
     const { data: horoscopes, error } = await query;
 
     if (error) {
-      console.error("Error fetching horoscopes:", error);
+      console.error(
+        "Error creating horoscope:",
+        error.message,
+        error.details,
+        error.hint
+      );
       return NextResponse.json(
-        { error: "Failed to fetch horoscopes" },
+        { error: error.message, details: error.details, hint: error.hint },
         { status: 500 }
       );
     }

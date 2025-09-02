@@ -1,6 +1,4 @@
 'use client';
-
-import ProtectedRoute from '@/components/ProtectedRoute';
 import React, { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -31,6 +29,7 @@ import {
   Plus,
   Search
 } from 'lucide-react';
+import AdminProtectedRoute from '../auth/AdminProtectedRoute';
 
 export default function AdminPage() {
   const { currentLanguage, t } = useLanguage();
@@ -42,12 +41,7 @@ export default function AdminPage() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
   
-  const [blogPost, setBlogPost] = useState({
-    title: '',
-    titleNe: '',
-    content: '',
-    contentNe: ''
-  });
+  
 
   useEffect(() => {
     fetchData();
@@ -115,36 +109,6 @@ export default function AdminPage() {
     }
   };
 
-  const createBlogPost = async () => {
-    try {
-      await fetch('/api/blog', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title_en: blogPost.title,
-          title_ne: blogPost.titleNe,
-          content_en: blogPost.content,
-          content_ne: blogPost.contentNe,
-          category: 'General',
-          is_published: true
-        })
-      });
-      
-      setBlogPost({ title: '', titleNe: '', content: '', contentNe: '' });
-      toast({
-        title: 'Success',
-        description: 'Blog post created successfully'
-      });
-    } catch (error) {
-      console.error('Error creating blog post:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to create blog post',
-        variant: 'destructive'
-      });
-    }
-  };
-
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending': return 'bg-yellow-100 text-yellow-800';
@@ -187,36 +151,6 @@ export default function AdminPage() {
     }
   ];
 
-  // Custom admin check component
-  const AdminProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-    if (!user) {
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-          <Header />
-          <div className="container mx-auto px-4 py-20 text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Access Denied</h1>
-            <p className="text-gray-600 mb-8">Please login to access admin panel</p>
-          </div>
-          <Footer />
-        </div>
-      );
-    }
-
-    if (!isAdmin) {
-      return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
-          <Header />
-          <div className="container mx-auto px-4 py-20 text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">Admin Access Required</h1>
-            <p className="text-gray-600 mb-8">You need admin privileges to access this page</p>
-          </div>
-          <Footer />
-        </div>
-      );
-    }
-
-    return <>{children}</>;
-  };
 
   if (loading) {
     return (
@@ -419,70 +353,7 @@ export default function AdminPage() {
             </RoleGuard>
           </TabsContent>
 
-          <TabsContent value="blog">
-            <RoleGuard permission={PERMISSIONS.CONTENT_CREATE}>
-              <Card className="shadow-lg border-0">
-                <CardHeader>
-                  <CardTitle className={currentLanguage === 'ne' ? 'font-nepali' : ''}>
-                    {currentLanguage === 'ne' ? 'नयाँ ब्लग पोस्ट' : 'New Blog Post'}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <Label htmlFor="title-en">Title (English)</Label>
-                      <Input
-                        id="title-en"
-                        value={blogPost.title}
-                        onChange={(e) => setBlogPost(prev => ({ ...prev, title: e.target.value }))}
-                        className="mt-2"
-                        placeholder="Enter title in English"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="title-ne" className="font-nepali">Title (नेपाली)</Label>
-                      <Input
-                        id="title-ne"
-                        value={blogPost.titleNe}
-                        onChange={(e) => setBlogPost(prev => ({ ...prev, titleNe: e.target.value }))}
-                        className="mt-2 font-nepali"
-                        placeholder="नेपालीमा शीर्षक लेख्नुहोस्"
-                      />
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <Label htmlFor="content-en">Content (English)</Label>
-                      <Textarea
-                        id="content-en"
-                        value={blogPost.content}
-                        onChange={(e) => setBlogPost(prev => ({ ...prev, content: e.target.value }))}
-                        className="mt-2 min-h-[200px]"
-                        placeholder="Write your blog content in English..."
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="content-ne" className="font-nepali">Content (नेपाली)</Label>
-                      <Textarea
-                        id="content-ne"
-                        value={blogPost.contentNe}
-                        onChange={(e) => setBlogPost(prev => ({ ...prev, contentNe: e.target.value }))}
-                        className="mt-2 min-h-[200px] font-nepali"
-                        placeholder="नेपालीमा ब्लग सामग्री लेख्नुहोस्..."
-                      />
-                    </div>
-                  </div>
-                  <Button 
-                    onClick={createBlogPost}
-                    className={`bg-indigo-600 hover:bg-indigo-700 ${currentLanguage === 'ne' ? 'font-nepali' : ''}`}
-                  >
-                    <Plus className="mr-2 h-4 w-4" />
-                    {currentLanguage === 'ne' ? 'पोस्ट प्रकाशित गर्नुहोस्' : 'Publish Post'}
-                  </Button>
-                </CardContent>
-              </Card>
-            </RoleGuard>
-          </TabsContent>
+          
         </Tabs>
       </div>
       

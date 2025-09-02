@@ -2,10 +2,17 @@ export const dynamicParams = false;
 
 export function generateStaticParams() {
   return [
-    { serviceId: 'kundali' },
+    { serviceId: 'all-services' },
     { serviceId: 'marriage' },
     { serviceId: 'career' },
     { serviceId: 'health' },
+    { serviceId: 'marriage' },
+    { serviceId: 'career' },
+    { serviceId: 'health' },
+    { serviceId: 'vastu' },
+    { serviceId: 'karmakanda' },
+    { serviceId: 'kundali-creation' },
+    { serviceId: 'gemstone' },
   ];
 }
 
