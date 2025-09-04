@@ -2,41 +2,38 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
+// ---------------------- GET Handler ----------------------
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    // ✅ Store cookies in a variable first
+    const cookieStore = cookies();
+
+    // ✅ Create Supabase client with a function returning the cookie object
+    const supabase = createRouteHandlerClient({
+      cookies: () => cookieStore,
+    });
+
+    // Parse query parameters
     const { searchParams } = new URL(request.url);
     const published = searchParams.get("published") !== "false";
     const zodiac = searchParams.get("zodiac");
     const date = searchParams.get("date");
 
+    // Build the query
     let query = supabase
       .from("daily_horoscopes")
       .select("*")
       .order("date", { ascending: false })
       .order("created_at", { ascending: false });
 
-    if (published) {
-      query = query.eq("is_published", true);
-    }
-
-    if (zodiac) {
-      query = query.eq("zodiac_sign", zodiac);
-    }
-
-    if (date) {
-      query = query.eq("date", date);
-    }
+    if (published) query = query.eq("is_published", true);
+    if (zodiac) query = query.eq("zodiac_sign", zodiac);
+    if (date) query = query.eq("date", date);
 
     const { data: horoscopes, error } = await query;
 
     if (error) {
-      console.error(
-        "Error creating horoscope:",
-        error.message,
-        error.details,
-        error.hint
-      );
+      console.error("Error fetching horoscopes:", error);
       return NextResponse.json(
         { error: error.message, details: error.details, hint: error.hint },
         { status: 500 }
@@ -45,7 +42,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ horoscopes });
   } catch (error) {
-    console.error("Error in horoscopes GET:", error);
+    console.error("Unexpected error in GET /horoscopes:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -53,20 +50,28 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// ---------------------- POST Handler ----------------------
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    // ✅ Store cookies first
+    const cookieStore = cookies();
 
-    // Check authentication
+    // ✅ Create Supabase client
+    const supabase = createRouteHandlerClient({
+      cookies: () => cookieStore,
+    });
+
+    // ✅ Get the current session
     const {
       data: { session },
       error: authError,
     } = await supabase.auth.getSession();
+
     if (authError || !session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check user role
+    // ✅ Check user role
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
@@ -82,7 +87,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    // Validate required fields
+    // ✅ Validate required fields
     const requiredFields = ["date", "zodiac_sign", "content_en", "content_ne"];
     for (const field of requiredFields) {
       if (!body[field]) {
@@ -93,6 +98,7 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // ✅ Insert new horoscope
     const { data: horoscope, error } = await supabase
       .from("daily_horoscopes")
       .insert([
@@ -118,7 +124,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ horoscope }, { status: 201 });
   } catch (error) {
-    console.error("Error in horoscopes POST:", error);
+    console.error("Unexpected error in POST /horoscopes:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
