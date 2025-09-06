@@ -20,7 +20,7 @@ import AstrologyDrawer from '@/components/layout/AstrologyDrawer';
 export default function Header() {
   const { currentLanguage, setLanguage, t } = useLanguage();
   const { openDrawer } = useDrawerContext();
-  const { user, signOut, loading } = useAuth();
+  const { user, signOut, loading, profile } = useAuth();
 
   const handleSignOut = async () => {
     try {
@@ -57,7 +57,7 @@ export default function Header() {
                     currentLanguage === 'ne' ? 'font-nepali' : ''
                   }`}
                 >
-                  {currentLanguage === 'ne' ? 'ज्योतिष केन्द्र' : 'Jyotish Center'}
+                  {currentLanguage === 'ne' ? 'ग्रह मन्त्र' : 'Graha Mantra'}
                 </h1>
                 <p className="hidden sm:block text-xs sm:text-sm text-indigo-200">
                   Professional Astrology
@@ -80,6 +80,11 @@ export default function Header() {
             <Link href="/contact" className="hover:text-yellow-300 transition-colors font-medium">
               {t('nav.contact')}
             </Link>
+            {profile?.role === "admin" && (
+              <Link href="/admin" className="hover:text-yellow-300 transition-colors font-medium">
+                {currentLanguage === "ne" ? "एडमिन प्यानल" : "Admin Panel"}
+              </Link>
+            )}
           </nav>
 
           {/* Right Section */}
