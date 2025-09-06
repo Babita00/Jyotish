@@ -175,6 +175,16 @@ export default function LoginPage() {
               )}
             </div>
 
+            {/* Forgot Password link */}
+            <div className="text-right mb-2">
+              <Link
+                href="/forgot-password"
+                className="text-purple-600 hover:text-purple-800 text-sm font-medium"
+              >
+                {currentLanguage === "ne" ? "पासवर्ड बिर्सनुभयो?" : "Forgot Password?"}
+              </Link>
+            </div>
+
             {/* Submit */}
             <Button
               type="submit"
