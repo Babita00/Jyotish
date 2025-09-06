@@ -86,6 +86,17 @@ export interface BlogPost {
   updated_at: string;
 }
 
+export interface DailyHoroscope {
+  id: string;
+  date: string;
+  zodiac_sign: string;
+  content_en: string;
+  content_ne: string;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 // API functions
 export const api = {
   // Services
@@ -213,27 +224,66 @@ export const api = {
   },
 
   // Blog Posts
-  async getBlogPosts(published = true): Promise<BlogPost[]> {
-    let query = supabase.from("blog_posts").select("*");
+  // async getBlogPosts(published = true): Promise<BlogPost[]> {
+  //   let query = supabase.from("blog_posts").select("*");
+
+  //   if (published) {
+  //     query = query.eq("is_published", true);
+  //   }
+
+  //   const { data, error } = await query.order("created_at", {
+  //     ascending: false,
+  //   });
+
+  //   if (error) throw error;
+  //   return data || [];
+  // },
+
+  // async createBlogPost(
+  //   post: Omit<BlogPost, "id" | "created_at" | "updated_at" | "view_count">
+  // ): Promise<BlogPost> {
+  //   const { data, error } = await supabase
+  //     .from("blog_posts")
+  //     .insert([post])
+  //     .select()
+  //     .single();
+
+  //   if (error) throw error;
+  //   return data;
+  // },
+
+  // async updateBlogPost(
+  //   postId: string,
+  //   updates: Partial<BlogPost>
+  // ): Promise<void> {
+  //   const { error } = await supabase
+  //     .from("blog_posts")
+  //     .update(updates)
+  //     .eq("id", postId);
+
+  //   if (error) throw error;
+  // },
+
+  // Daily Horoscopes
+  async getHoroscopes(published = true): Promise<DailyHoroscope[]> {
+    let query = supabase.from("daily_horoscopes").select("*");
 
     if (published) {
       query = query.eq("is_published", true);
     }
 
-    const { data, error } = await query.order("created_at", {
-      ascending: false,
-    });
+    const { data, error } = await query.order("date", { ascending: false });
 
     if (error) throw error;
     return data || [];
   },
 
-  async createBlogPost(
-    post: Omit<BlogPost, "id" | "created_at" | "updated_at" | "view_count">
-  ): Promise<BlogPost> {
+  async createHoroscope(
+    horoscope: Omit<DailyHoroscope, "id" | "created_at" | "updated_at">
+  ): Promise<DailyHoroscope> {
     const { data, error } = await supabase
-      .from("blog_posts")
-      .insert([post])
+      .from("daily_horoscopes")
+      .insert([horoscope])
       .select()
       .single();
 
@@ -241,14 +291,23 @@ export const api = {
     return data;
   },
 
-  async updateBlogPost(
-    postId: string,
-    updates: Partial<BlogPost>
+  async updateHoroscope(
+    horoscopeId: string,
+    updates: Partial<DailyHoroscope>
   ): Promise<void> {
     const { error } = await supabase
-      .from("blog_posts")
+      .from("daily_horoscopes")
       .update(updates)
-      .eq("id", postId);
+      .eq("id", horoscopeId);
+
+    if (error) throw error;
+  },
+
+  async deleteHoroscope(horoscopeId: string): Promise<void> {
+    const { error } = await supabase
+      .from("daily_horoscopes")
+      .delete()
+      .eq("id", horoscopeId);
 
     if (error) throw error;
   },
@@ -275,37 +334,27 @@ export const api = {
     fullName: string,
     phone?: string
   ) {
-    console.log("🔄 Attempting signup with:", {
+    const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
-      fullName,
-      phone: phone || "not provided",
+      password,
+      options: { data: { full_name: fullName, phone: phone || null } },
     });
 
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-            phone: phone || null,
-          },
-        },
+    if (authError) throw authError;
+
+    // Insert into profiles
+    if (authData.user) {
+      const { error: profileError } = await supabase.from("profiles").insert({
+        id: authData.user.id,
+        full_name: fullName,
+        phone: phone || null,
+        role: "client", // default role
       });
 
-      console.log("📝 Supabase signup response:", { data, error });
-
-      if (error) {
-        console.error("❌ Signup error:", error);
-        throw error;
-      }
-
-      console.log("✅ Signup successful:", data);
-      return data;
-    } catch (err) {
-      console.error("🚨 Unexpected signup error:", err);
-      throw err;
+      if (profileError) throw profileError;
     }
+
+    return authData;
   },
 
   async signIn(email: string, password: string) {

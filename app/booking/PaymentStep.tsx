@@ -9,7 +9,7 @@ import {
   Briefcase,
   Activity,
 } from "lucide-react";
-import aboutSectionImage from  '@/app/api/assets/about-section image.webp';
+import paymentImage from  '@/app/api/assets/payment.jpg';
 
 interface Service {
   service_key: string;
@@ -114,7 +114,7 @@ export const PaymentStep: React.FC<PaymentStepProps> = ({
             {/* Display an image from assets */}
             <div className="flex justify-center">
               <img
-                src={aboutSectionImage.src}
+                src={paymentImage.src}
                 alt="Payment Info"
                 className="w-60 h-auto object-contain"
               />

@@ -5,21 +5,14 @@ import { cookies } from "next/headers";
 // ---------------------- GET Handler ----------------------
 export async function GET(request: NextRequest) {
   try {
-    // ✅ Store cookies in a variable first
     const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
-    // ✅ Create Supabase client with a function returning the cookie object
-    const supabase = createRouteHandlerClient({
-      cookies: () => cookieStore,
-    });
-
-    // Parse query parameters
     const { searchParams } = new URL(request.url);
     const published = searchParams.get("published") !== "false";
     const zodiac = searchParams.get("zodiac");
     const date = searchParams.get("date");
 
-    // Build the query
     let query = supabase
       .from("daily_horoscopes")
       .select("*")
@@ -33,11 +26,7 @@ export async function GET(request: NextRequest) {
     const { data: horoscopes, error } = await query;
 
     if (error) {
-      console.error("Error fetching horoscopes:", error);
-      return NextResponse.json(
-        { error: error.message, details: error.details, hint: error.hint },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json({ horoscopes });
@@ -53,15 +42,9 @@ export async function GET(request: NextRequest) {
 // ---------------------- POST Handler ----------------------
 export async function POST(request: NextRequest) {
   try {
-    // ✅ Store cookies first
     const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
-    // ✅ Create Supabase client
-    const supabase = createRouteHandlerClient({
-      cookies: () => cookieStore,
-    });
-
-    // ✅ Get the current session
     const {
       data: { session },
       error: authError,
@@ -71,7 +54,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // ✅ Check user role
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
@@ -86,8 +68,6 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-
-    // ✅ Validate required fields
     const requiredFields = ["date", "zodiac_sign", "content_en", "content_ne"];
     for (const field of requiredFields) {
       if (!body[field]) {
@@ -98,7 +78,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // ✅ Insert new horoscope
     const { data: horoscope, error } = await supabase
       .from("daily_horoscopes")
       .insert([
@@ -115,7 +94,6 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error("Error creating horoscope:", error);
       return NextResponse.json(
         { error: "Failed to create horoscope" },
         { status: 500 }

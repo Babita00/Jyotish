@@ -1,28 +1,9 @@
-"use client";
-
-import React from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  Activity,
-  ArrowRight,
-  Briefcase,
-  Heart,
-  MapPin,
-  Phone,
-  Star,
-  Type,
-  Video,
-} from "lucide-react";
-import { useLanguage } from "@/components/LanguageProvider";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
 const services = [
   {
     id: "all-services",
-    icon: <Star className="h-12 w-12 text-yellow-400" />,
     titleEn: "Complete Astrology Services",
     titleNe: "सम्पूर्ण ज्योतिषीय सेवाहरु",
     descEn:
@@ -34,7 +15,6 @@ const services = [
   },
   {
     id: "marriage",
-    icon: <Heart className="h-12 w-12 text-pink-400" />,
     titleEn: "Marriage Matching",
     titleNe: "विवाह मिलान",
     descEn:
@@ -45,7 +25,6 @@ const services = [
   },
   {
     id: "career",
-    icon: <Briefcase className="h-12 w-12 text-blue-400" />,
     titleEn: "Career Guidance",
     titleNe: "करियर मार्गदर्शन",
     descEn: "Professional path guidance and business timing advice for success",
@@ -55,7 +34,6 @@ const services = [
   },
   {
     id: "health",
-    icon: <Activity className="h-12 w-12 text-green-400" />,
     titleEn: "Health Predictions",
     titleNe: "स्वास्थ्य भविष्यवाणी",
     descEn: "Health forecasts and remedial measures for wellness and longevity",
@@ -66,7 +44,6 @@ const services = [
   },
   {
     id: "vastu",
-    icon: <Type className="h-12 w-12 text-purple-400" />,
     titleEn: "Vastu Consultation Service",
     titleNe: "वास्तु परामर्श सेवा",
     descEn:
@@ -78,7 +55,6 @@ const services = [
   },
   {
     id: "karmakanda",
-    icon: <Phone className="h-12 w-12 text-orange-400" />,
     titleEn: "Religious Ceremony Service",
     titleNe: "कर्मकाण्ड सेवा",
     descEn:
@@ -89,7 +65,6 @@ const services = [
   },
   {
     id: "kundali-creation",
-    icon: <Video className="h-12 w-12 text-indigo-400" />,
     titleEn: "Kundali (Chart) Creation Service",
     titleNe: "कुण्डली (चिना) निर्माण सेवा",
     descEn:
@@ -101,7 +76,6 @@ const services = [
   },
   {
     id: "gemstone",
-    icon: <MapPin className="h-12 w-12 text-emerald-400" />,
     titleEn: "Planetary Gemstone Service",
     titleNe: "ग्रह रत्न सेवा",
     descEn:
@@ -111,104 +85,34 @@ const services = [
     gradient: "from-emerald-400 to-green-500",
   },
 ];
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY! // ⚡ important
+);
 
-export default function OurService() {
-  const { currentLanguage } = useLanguage();
-  const isNepali = currentLanguage === "ne";
+export async function GET() {
+  const mapped = services.map((s) => ({
+    service_key: s.id,
+    name_en: s.titleEn,
+    name_ne: s.titleNe,
+    description_en: s.descEn,
+    description_ne: s.descNe,
+    detailed_description_en: s.descEn, // using same text for now
+    detailed_description_ne: s.descNe, // you can extend later
+    price: s.price ?? 0,
+    duration_minutes: 60, // default
+    features: [], // empty JSON
+    is_active: true,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  }));
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col">
-      <Header />
+  const { data, error } = await supabase.from("services").insert(mapped);
 
-      <main className="flex-1">
-        <section id="services" className="py-20 relative">
-          <div className="container mx-auto px-4 relative">
-            {/* heading */}
-            <div className="text-center mb-16">
-              <h2
-                className={`text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-indigo-900 to-purple-800 bg-clip-text text-transparent
-    ${isNepali ? "font-nepali leading-[1.3] pt-2" : "leading-tight"}`}
-              >
-                {isNepali ? "हाम्रा सेवाहरू" : "Our Services"}
-              </h2>
+  if (error) {
+    console.error(error);
+    return NextResponse.json({ error }, { status: 500 });
+  }
 
-              <p
-                className={`text-xl text-gray-600 max-w-3xl mx-auto ${
-                  isNepali ? "font-nepali" : ""
-                }`}
-              >
-                {isNepali
-                  ? "तपाईंको जीवनका सबै क्षेत्रमा विशेषीकृत ज्योतिष सेवाहरू"
-                  : "Specialized astrology services for all areas of your life"}
-              </p>
-            </div>
-
-            {/* services grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {services.map((service) => (
-                <Card
-                  key={service.id}
-                  className="group flex flex-col justify-between hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 bg-white border-0 shadow-lg overflow-hidden relative"
-                >
-                  {/* gradient hover background */}
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
-                  ></div>
-
-                  <CardContent className="p-8 text-center relative flex flex-col flex-1">
-                    {/* icon */}
-                    <div className="flex justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                      <div
-                        className={`p-4 rounded-2xl bg-gradient-to-br ${service.gradient} shadow-lg`}
-                      >
-                        {service.icon}
-                      </div>
-                    </div>
-
-                    {/* title */}
-                    <h3
-                      className={`text-2xl font-bold mb-4 text-gray-900 ${
-                        isNepali ? "font-nepali" : ""
-                      }`}
-                    >
-                      {isNepali ? service.titleNe : service.titleEn}
-                    </h3>
-
-                    {/* description (clamped) */}
-                    <p
-                      className={`text-gray-600 mb-6 leading-relaxed ${
-                        isNepali ? "font-nepali" : ""
-                      } line-clamp-3`}
-                    >
-                      {isNepali ? service.descNe : service.descEn}
-                    </p>
-
-                    {/* price */}
-                    <div className="mb-6">
-                      <span className="text-3xl font-bold text-green-600">
-                        Rs. {service.price || "Contact for Price"}
-                      </span>
-                    </div>
-
-                    {/* button */}
-                    <Button
-                      asChild
-                      className={`w-full bg-gradient-to-r ${service.gradient} hover:shadow-lg transition-all duration-300 text-white font-semibold py-3 mt-auto`}
-                    >
-                      <Link href={`/services/${service.id}`}>
-                        {isNepali ? "विस्तार हेर्नुहोस्" : "View Details"}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <Footer />
-    </div>
-  );
+  return NextResponse.json({ inserted: data });
 }

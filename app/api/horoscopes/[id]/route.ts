@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
+// ---------------------- GET Handler ----------------------
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -28,6 +29,7 @@ export async function GET(
   }
 }
 
+// ---------------------- PUT Handler ----------------------
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -35,7 +37,6 @@ export async function PUT(
   try {
     const supabase = createRouteHandlerClient({ cookies });
 
-    // Check authentication
     const {
       data: { session },
       error: authError,
@@ -44,7 +45,6 @@ export async function PUT(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check user role
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
@@ -74,7 +74,6 @@ export async function PUT(
       .single();
 
     if (error) {
-      console.error("Error updating horoscope:", error);
       return NextResponse.json(
         { error: "Failed to update horoscope" },
         { status: 500 }
@@ -91,6 +90,7 @@ export async function PUT(
   }
 }
 
+// ---------------------- DELETE Handler ----------------------
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -123,7 +123,6 @@ export async function DELETE(
       .eq("id", params.id);
 
     if (error) {
-      console.error("Error deleting horoscope:", error);
       return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
     }
 
