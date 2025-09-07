@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from './LanguageProvider';
@@ -21,6 +21,7 @@ export default function Header() {
   const { currentLanguage, setLanguage, t } = useLanguage();
   const { openDrawer } = useDrawerContext();
   const { user, signOut, loading, profile } = useAuth();
+  const [showCallMenu, setShowCallMenu] = useState(false);
 
   const handleSignOut = async () => {
     try {
@@ -29,6 +30,11 @@ export default function Header() {
       console.error('Error signing out:', error);
     }
   };
+
+  const phoneNumbers = [
+    { label: 'First', number: '9866096040' },
+    { label: 'Second', number: '9863474528' },
+  ];
 
   return (
     <header className="bg-gradient-to-r from-indigo-900 via-purple-900 to-indigo-800 text-white shadow-lg sticky top-0 z-50">
@@ -80,9 +86,9 @@ export default function Header() {
             <Link href="/contact" className="hover:text-yellow-300 transition-colors font-medium">
               {t('nav.contact')}
             </Link>
-            {profile?.role === "admin" && (
+            {profile?.role === 'admin' && (
               <Link href="/admin" className="hover:text-yellow-300 transition-colors font-medium">
-                {currentLanguage === "ne" ? "एडमिन प्यानल" : "Admin Panel"}
+                {currentLanguage === 'ne' ? 'एडमिन प्यानल' : 'Admin Panel'}
               </Link>
             )}
           </nav>
@@ -117,21 +123,42 @@ export default function Header() {
               </Button>
             </div>
 
-            {/* Call Button */}
-            <a
-              href="tel:+9779801234567"
-              className="sm:hidden inline-flex items-center justify-center bg-yellow-500 text-black p-2 rounded-full hover:bg-yellow-400 transition-colors"
-              aria-label="Call Now"
-            >
-              <Phone className="h-4 w-4" />
-            </a>
-            <a
-              href="tel:+9779801234567"
-              className="hidden sm:flex items-center space-x-1 bg-yellow-500 text-black px-3 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
-            >
-              <Phone className="h-4 w-4" />
-              <span>Call Now</span>
-            </a>
+            {/* Call Button with number selection */}
+            <div className="relative">
+              {/* Mobile Button */}
+              <Button
+                onClick={() => setShowCallMenu((prev) => !prev)}
+                className="sm:hidden inline-flex items-center justify-center bg-yellow-500 text-black p-2 rounded-full hover:bg-yellow-400 transition-colors"
+                aria-label="Call Now"
+              >
+                <Phone className="h-4 w-4" />
+              </Button>
+
+              {/* Desktop Button */}
+              <Button
+                onClick={() => setShowCallMenu((prev) => !prev)}
+                className="hidden sm:flex items-center space-x-1 bg-yellow-500 text-black px-3 py-2 rounded-lg font-medium hover:bg-yellow-400 transition-colors"
+              >
+                <Phone className="h-4 w-4" />
+                <span>Call Now</span>
+              </Button>
+
+              {/* Dropdown menu */}
+              {showCallMenu && (
+                <div className="absolute right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 z-50 min-w-[150px]">
+                  {phoneNumbers.map((item) => (
+                    <a
+                      key={item.number}
+                      href={`tel:${item.number}`} // triggers call
+                      className="block px-4 py-2 hover:bg-gray-100 text-black"
+                      onClick={() => setShowCallMenu(false)}
+                    >
+                      {item.label}: {item.number}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
 
             {/* Authentication Section */}
             {!loading && (

@@ -5,7 +5,7 @@ export interface Service {
   titleNe: string;
   descEn: string;
   descNe: string;
-  price: number;
+  price: number | null;
   gradient: string;
 }
 

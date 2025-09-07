@@ -5,25 +5,17 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DailyHoroscope from "@/components/user/DailyHoroscope";
 import { useLanguage } from "@/components/LanguageProvider";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import {
   Star,
-  Calendar,
   Heart,
   Briefcase,
   Activity,
-  DollarSign,
   Type,
   Phone,
   Video,
   MapPin,
-  Clock,
-  Award,
-  Users,
-  ArrowRight,
-  Sparkles,
 } from "lucide-react";
 import {
   AboutSection,
@@ -33,10 +25,22 @@ import {
   TestimonialsSection,
 } from "@/components/sections";
 
+// ✅ Service type updated
+export interface Service {
+  id: string;
+  icon: React.ReactNode;
+  titleEn: string;
+  titleNe: string;
+  descEn: string;
+  descNe: string;
+  price: number | null; // <-- fixed
+  gradient: string;
+}
+
 export default function Home() {
   const { currentLanguage, t } = useLanguage();
 
-  const services = [
+  const services: Service[] = [
     {
       id: "all-services",
       icon: <Star className="h-12 w-12 text-yellow-400" />,
@@ -46,10 +50,9 @@ export default function Home() {
         "We provide a complete range of professional astrology services including birth chart reading, marriage matching, career guidance, health predictions, vastu consultation, religious ceremonies, kundali creation, and gemstone recommendations — tailored to your life path and goals.",
       descNe:
         "हामीले जन्म कुण्डली पढाइ, विवाह मिलान, करियर मार्गदर्शन, स्वास्थ्य भविष्यवाणी, वास्तु परामर्श, धार्मिक कर्मकाण्ड, कुण्डली निर्माण र रत्न परामर्श सहित सम्पूर्ण ज्योतिषीय सेवाहरु तपाईंको जीवनमार्ग र लक्ष्यअनुसार प्रदान गर्दछौँ।",
-      price: 5000,
+      price: 3000,
       gradient: "from-yellow-400 to-purple-600",
     },
-
     {
       id: "marriage",
       icon: <Heart className="h-12 w-12 text-pink-400" />,
@@ -58,7 +61,7 @@ export default function Home() {
       descEn:
         "Traditional gun milan and compatibility analysis for perfect matches",
       descNe: "उत्तम मेलको लागि पारम्परिक गुण मिलान र मेल खोज विश्लेषण",
-      price: 1500,
+      price: 1000,
       gradient: "from-pink-400 to-red-500",
     },
     {
@@ -69,7 +72,7 @@ export default function Home() {
       descEn:
         "Professional path guidance and business timing advice for success",
       descNe: "सफलताको लागि व्यावसायिक मार्ग मार्गदर्शन र व्यापार समय सल्लाह",
-      price: 1800,
+      price: 1500,
       gradient: "from-blue-400 to-indigo-500",
     },
     {
@@ -105,7 +108,7 @@ export default function Home() {
         "We provide complete guidance and services for all religious ceremonies according to Vedic tradition including marriage, sacred thread ceremony, planetary worship, Rudra worship, goddess worship, havan, Bhagwat and all religious rituals.",
       descNe:
         "हामीले वैदिक परम्परा अनुसार विवाह, ब्रतबन्ध, ग्रह पूजा, रुद्राभिषेक, देवी पूजा, हवन, भागवत र समस्त धार्मिक कर्मकाण्डको सम्पूर्ण मार्गदर्शन तथा सेवा प्रदान गर्दछौँ।",
-      price: 3000,
+      price: null, // <-- changed
       gradient: "from-orange-400 to-red-500",
     },
     {
@@ -117,7 +120,7 @@ export default function Home() {
         "We create personalized Kundali (charts) according to birth date, time and place and provide clear guidance according to Vedic astrology about various aspects of life—health, education, marriage, wealth, business and future.",
       descNe:
         "हामीले जन्ममिति, समय र स्थानअनुसार व्यक्तिगत कुण्डली (चिना) निर्माण गरी जीवनका विविध पक्ष—स्वास्थ्य, शिक्षा, विवाह, धन, व्यवसाय र भविष्य—बारे वैदिक ज्योतिष अनुसार स्पष्ट मार्गदर्शन प्रदान गर्दछौँ।",
-      price: 1800,
+      price: 2000,
       gradient: "from-indigo-400 to-blue-500",
     },
     {
@@ -129,7 +132,7 @@ export default function Home() {
         "We provide gemstone consultation in a classical way for planetary defect removal and positive influence in life. Suitable gemstone, wearing time, mantra chanting or worship method is suggested according to each person's birth chart.",
       descNe:
         "हामीले ग्रह दोष निवारण र जीवनमा सकारात्मक प्रभावको लागि शास्त्रीय तवरबाट रत्न परामर्श प्रदान गर्छौँ। प्रत्येक व्यक्तिको जन्मकुण्डली अनुसार उपयुक्त रत्न, धारण समय, मन्त्र–जप वा पूजा विधि सुझाव गरिन्छ।",
-      price: 2200,
+      price: null, // <-- changed
       gradient: "from-emerald-400 to-green-500",
     },
   ];

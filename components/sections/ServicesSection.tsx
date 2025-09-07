@@ -79,9 +79,17 @@ export default function ServicesSection({
 
                 {/* price */}
                 <div className="mb-6">
-                  <span className="text-3xl font-bold text-green-600">
-                    Rs. {service.price || "Contact for Price"}
-                  </span>
+                  {service.price !== null ? (
+                    <span className="text-3xl font-bold text-green-600">
+                      Rs. {service.price}
+                    </span>
+                  ) : (
+                    <span className="text-xl font-semibold text-gray-500">
+                      {currentLanguage === "ne"
+                        ? "मूल्यका लागि सम्पर्क गर्नुहोस्"
+                        : "Contact for price"}
+                    </span>
+                  )}
                 </div>
 
                 {/* button */}

@@ -172,7 +172,7 @@ export default function ContactPage() {
           >
             {/* Profile Picture */}
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
-              <div className="w-60 h-60 rounded-full p-1 bg-gradient-to-r from-pink-400 to-red-500 shadow-lg">
+              <div className="w-60 h-60 md:w-40 md:h-40 rounded-full p-1 bg-gradient-to-r from-pink-400 to-red-500 shadow-lg">
                 <div className="w-full h-full rounded-full overflow-hidden">
                   <Image
                     src={astro.image}
