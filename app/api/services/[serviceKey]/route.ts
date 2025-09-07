@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { api } from "@/lib/supabase";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { serviceKey: string } }
-) {
+interface RouteContext {
+  params: Promise<{ serviceKey: string }>; // Must be a Promise
+}
+
+export async function GET(request: NextRequest, context: RouteContext) {
   try {
-    const service = await api.getService(params.serviceKey);
+    const { serviceKey } = await context.params; // await the promise
+    const service = await api.getService(serviceKey);
 
     if (!service) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });

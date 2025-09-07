@@ -8,40 +8,39 @@ function s(input: unknown): string {
   return input.replace(/\s+/g, " ").trim();
 }
 
+interface BookingRouteContext {
+  params: Promise<{ id: string }>; // <- matches Next.js generated type
+}
+
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: BookingRouteContext
 ) {
-  try {
-    const supabase = createRouteHandlerClient({ cookies });
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const resolvedParams = await context.params;
+  const bookingId = resolvedParams.id;
 
-    const body = await request.json();
-    const bookingId = params.id;
+  const supabase = createRouteHandlerClient({ cookies });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-    if (body.status) {
-      await api.updateBookingStatus(
-        bookingId,
-        s(body.status) as any,
-        s(body.admin_notes)
-      );
-    }
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-    if (body.payment_status) {
-      await api.updatePaymentStatus(bookingId, s(body.payment_status) as any);
-    }
+  const body = await request.json();
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Error updating booking:", error);
-    return NextResponse.json(
-      { error: "Failed to update booking" },
-      { status: 500 }
+  if (body.status) {
+    await api.updateBookingStatus(
+      bookingId,
+      s(body.status) as any,
+      s(body.admin_notes)
     );
   }
+
+  if (body.payment_status) {
+    await api.updatePaymentStatus(bookingId, s(body.payment_status) as any);
+  }
+
+  return NextResponse.json({ success: true });
 }

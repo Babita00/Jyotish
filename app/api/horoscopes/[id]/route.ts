@@ -2,136 +2,112 @@ import { NextRequest, NextResponse } from "next/server";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 
-// ---------------------- GET Handler ----------------------
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const supabase = createRouteHandlerClient({ cookies });
-    const { data: horoscope, error } = await supabase
-      .from("daily_horoscopes")
-      .select("*")
-      .eq("id", params.id)
-      .single();
-
-    if (error) {
-      return NextResponse.json({ error: "Not found" }, { status: 404 });
-    }
-
-    return NextResponse.json({ horoscope });
-  } catch (error) {
-    console.error("Error in horoscopes GET:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
+interface RouteContext {
+  params: Promise<{ id: string }>; // must be Promise
 }
 
-// ---------------------- PUT Handler ----------------------
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const supabase = createRouteHandlerClient({ cookies });
+// GET
+export async function GET(request: NextRequest, context: RouteContext) {
+  const { id } = await context.params; // await the promise
 
-    const {
-      data: { session },
-      error: authError,
-    } = await supabase.auth.getSession();
-    if (authError || !session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  const supabase = createRouteHandlerClient({ cookies });
+  const { data: horoscope, error } = await supabase
+    .from("daily_horoscopes")
+    .select("*")
+    .eq("id", id)
+    .single();
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", session.user.id)
-      .single();
-
-    if (!profile || !["admin", "astrologer"].includes(profile.role)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
-
-    const body = await request.json();
-
-    const { data: horoscope, error } = await supabase
-      .from("daily_horoscopes")
-      .update({
-        date: body.date,
-        zodiac_sign: body.zodiac_sign,
-        content_en: body.content_en,
-        content_ne: body.content_ne,
-        is_published: body.is_published,
-      })
-      .eq("id", params.id)
-      .select()
-      .single();
-
-    if (error) {
-      return NextResponse.json(
-        { error: "Failed to update horoscope" },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ horoscope });
-  } catch (error) {
-    console.error("Error in horoscopes PUT:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+  if (error) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
+
+  return NextResponse.json({ horoscope });
 }
 
-// ---------------------- DELETE Handler ----------------------
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const supabase = createRouteHandlerClient({ cookies });
+// PUT
+export async function PUT(request: NextRequest, context: RouteContext) {
+  const { id } = await context.params;
 
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    if (!session)
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const supabase = createRouteHandlerClient({ cookies });
+  const {
+    data: { session },
+    error: authError,
+  } = await supabase.auth.getSession();
 
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", session.user.id)
-      .single();
+  if (authError || !session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-    if (!profile || !["admin", "astrologer"].includes(profile.role)) {
-      return NextResponse.json(
-        { error: "Insufficient permissions" },
-        { status: 403 }
-      );
-    }
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", session.user.id)
+    .single();
 
-    const { error } = await supabase
-      .from("daily_horoscopes")
-      .delete()
-      .eq("id", params.id);
-
-    if (error) {
-      return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
-    }
-
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    console.error("Error in horoscopes DELETE:", error);
+  if (!profile || !["admin", "astrologer"].includes(profile.role)) {
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Insufficient permissions" },
+      { status: 403 }
+    );
+  }
+
+  const body = await request.json();
+
+  const { data: horoscope, error } = await supabase
+    .from("daily_horoscopes")
+    .update({
+      date: body.date,
+      zodiac_sign: body.zodiac_sign,
+      content_en: body.content_en,
+      content_ne: body.content_ne,
+      is_published: body.is_published,
+    })
+    .eq("id", id)
+    .select()
+    .single();
+
+  if (error) {
+    return NextResponse.json(
+      { error: "Failed to update horoscope" },
       { status: 500 }
     );
   }
+
+  return NextResponse.json({ horoscope });
+}
+
+// DELETE
+export async function DELETE(request: NextRequest, context: RouteContext) {
+  const { id } = await context.params;
+
+  const supabase = createRouteHandlerClient({ cookies });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (!session)
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", session.user.id)
+    .single();
+
+  if (!profile || !["admin", "astrologer"].includes(profile.role)) {
+    return NextResponse.json(
+      { error: "Insufficient permissions" },
+      { status: 403 }
+    );
+  }
+
+  const { error } = await supabase
+    .from("daily_horoscopes")
+    .delete()
+    .eq("id", id);
+
+  if (error)
+    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+
+  return NextResponse.json({ ok: true });
 }
