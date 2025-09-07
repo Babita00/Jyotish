@@ -15,6 +15,14 @@ export const MENU_ITEMS = [
     icon: "📝",
   },
   {
+    id: "name-horoscope",
+    route: "/astrology/name-horoscope",
+    icon: "☀️",
+    titleEn: "Name Horoscope Table",
+    titleNe: "नामको पहिलो अक्षरबाट राशी हेर्ने तालिका",
+  },
+
+  {
     id: "hora-knowledge",
     titleEn: "Hora Knowledge Table",
     titleNe: "होड़ा ज्ञान तालिका",
@@ -32,16 +40,33 @@ export const MENU_ITEMS = [
 
 // Name category mapping data
 export const NAME_CATEGORY_DATA = [
-  { letters: "अ, इ, उ, ए", category: "गरुड (बैर-सर्प)" },
-  { letters: "क, ख, ग, घ, ङ", category: "बिरालो (बैर-मुता)" },
-  { letters: "च, छ, ज, स, ञ", category: "सिंह (बैर-मृग)" },
+  { letters: "अ, इ, उ, ए", category: "गरुड (वैर-सर्प)" },
+  { letters: "क, ख, ग, घ, ङ", category: "बिरालो (वैर-मुसा)" },
+  { letters: "च, छ, ज, स, ञ", category: "सिंह (वैर-मृग)" },
   { letters: "ट, उ, ड, द, ण", category: "कुकुर (वैर-न्याउरी)" },
-  { letters: "त, ब, द, घ, न", category: "सर्प (बैर-गरुड)" },
+  { letters: "त, ब, द, घ, न", category: "सर्प (वैर-गरुड)" },
   { letters: "प, फ, ब, भ, म", category: "मुसा (वैर-विरालो)" },
   { letters: "प, र, ल, व", category: "मूग (वैर-सिंह)" },
-  { letters: "श, व, स, ह", category: "न्याउरी (बैर-कुकुर)" },
+  { letters: "श, व, स, ह", category: "न्याउरी (वैर-कुकुर)" },
 ];
 
+export const NAME_HOROSCOPE_DATA = [
+  { letters: "चु, चे, चो, ला, लि, लु, ले, लो, अ", horoscope: "मेष" },
+  { letters: "इ, उ, ए, ओ, वा, वि, वु, वे, वो", horoscope: "वृष" },
+  { letters: "का, कि, कु, घ, ङ, छ, के, को, हा", horoscope: "मिथुन" },
+  { letters: "हि, हु, हे, हो, डा, डि, डु, डे, डो", horoscope: "कर्कट" },
+  { letters: "मा, मि, मु, मे, मो, टा, टि, टु, टे", horoscope: "सिंह" },
+  { letters: "टो, पा, पि, पु, ष, ण, ठ, पे, पो", horoscope: "कन्या" },
+  { letters: "रा, रि, रु, रे, रो, ता, ति, तु, ते", horoscope: "तुला" },
+  { letters: "तो, ना, नि, नु, ने, नो, या, यि, यु", horoscope: "वृश्चिक" },
+  { letters: "ये, यो, भा, भि, भु, धा, फा, ढा, भे", horoscope: "धनु" },
+  {
+    letters: "भो, जा, जि, जु, जे, जो, ख, खि, खु, खे, खो, गा, गि",
+    horoscope: "मकर",
+  },
+  { letters: "गु, गे, गो, सा, सि, सु, से, सो, दा", horoscope: "कुम्भ" },
+  { letters: "दि, दु, थ, झ, ञ, दे, दो, चा, चि", horoscope: "मीन" },
+];
 // Hora knowledge table data
 export const HORA_KNOWLEDGE_DATA = [
   {
