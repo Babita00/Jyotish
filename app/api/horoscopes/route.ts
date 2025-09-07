@@ -42,9 +42,10 @@ export async function GET(request: NextRequest) {
 // ---------------------- POST Handler ----------------------
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = cookies();
+    const cookieStore = cookies(); // ✅ FIXED (no await)
     const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
+    // Check auth session
     const {
       data: { session },
       error: authError,
@@ -54,11 +55,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { data: profile } = await supabase
+    // Get user role
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", session.user.id)
       .single();
+
+    if (profileError) {
+      console.error("Profile fetch error:", profileError);
+      return NextResponse.json(
+        { error: profileError.message },
+        { status: 500 }
+      );
+    }
 
     if (!profile || !["admin", "astrologer"].includes(profile.role)) {
       return NextResponse.json(
@@ -67,6 +77,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate request body
     const body = await request.json();
     const requiredFields = ["date", "zodiac_sign", "content_en", "content_ne"];
     for (const field of requiredFields) {
@@ -78,7 +89,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const { data: horoscope, error } = await supabase
+    // Insert horoscope
+    const { data: horoscope, error: insertError } = await supabase
       .from("daily_horoscopes")
       .insert([
         {
@@ -93,18 +105,16 @@ export async function POST(request: NextRequest) {
       .select()
       .single();
 
-    if (error) {
-      return NextResponse.json(
-        { error: "Failed to create horoscope" },
-        { status: 500 }
-      );
+    if (insertError) {
+      console.error("Insert error:", insertError);
+      return NextResponse.json({ error: insertError.message }, { status: 500 });
     }
 
     return NextResponse.json({ horoscope }, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Unexpected error in POST /horoscopes:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: error.message || "Internal server error" },
       { status: 500 }
     );
   }
