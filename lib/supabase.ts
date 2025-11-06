@@ -334,27 +334,19 @@ export const api = {
     fullName: string,
     phone?: string
   ) {
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: fullName, phone: phone || null } },
+      options: {
+        data: { full_name: fullName, phone: phone || null },
+      },
     });
 
-    if (authError) throw authError;
+    if (error) throw error;
 
-    // Insert into profiles
-    if (authData.user) {
-      const { error: profileError } = await supabase.from("profiles").insert({
-        id: authData.user.id,
-        full_name: fullName,
-        phone: phone || null,
-        role: "client", // default role
-      });
+    // ✅ REMOVE the profiles.insert() code completely
 
-      if (profileError) throw profileError;
-    }
-
-    return authData;
+    return data;
   },
 
   async signIn(email: string, password: string) {
